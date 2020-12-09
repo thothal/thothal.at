@@ -1,0 +1,58 @@
+---
+title: Yet Another Coding Blog
+author: Thorn Thaler
+date: '2020-12-08'
+slug: yet-another-coding-blog
+categories:
+  - coding
+  - cooking
+tags:
+  - first-post
+  - hello-world
+authors: []
+description: ''
+externalLink: ''
+---
+
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="hello-world" class="section level2">
+<h2>Hello World</h2>
+<p>During my normal work day I spend quite some time reading coding related blog posts and
+skimming through questions on Stackoverflow (and - if time permits - answering some <a href="https://stackoverflow.com/search?q=%5Br%5D+or+%5Bshiny%5D+user%3A4125751+is%3Aanswer">R or shiny related questions</a>).</p>
+<p>When I learn about a new topic or technique it can happen that I jump from one article to
+another (and more often than not get side-tracked by yet another topic 🤦️).
+In one of those scavenger hunts I ended up reading on
+<a href="https://bookdown.org/yihui/blogdown/">Blogdown</a> and a quote was catching my attention:</p>
+<blockquote>
+<p>If you don’t have a website nowadays, you don’t exist.</p>
+</blockquote>
+<p>Being utterly exaggerated, there is a grain of truth in it. I used to have a website
+since my early days at university, but never really bothered to keep it updated or
+even remotely interesting. Maybe it was due to a lack of imagination of which content I
+could possibly produce, which is of any interest.</p>
+<p>However, in my professional life I gained quite some knowledge about R and related
+eco systems (such as <code>shiny</code> or lately – to a much smaller degree – <code>Javascript</code>). Maybe
+this is the content I was looking for? If I just had a system to easily post code
+snippets…</p>
+<p>Wait a minute, did I not just read about blogdown? Very well, so here my journey starts.
+I try to post code snippets or interesting solutions, libraries or challenges I see in my
+day-to-day life with the hope that they may help somebody, like the many posts I read so
+far helped me.</p>
+<p>The last thing left is to produce the ubiquitous <code>Hello World</code> snippet (maybe in a
+nerdier way then usual):</p>
+<pre class="r"><code>hello_world &lt;- c(8L, 31L, 38L, 38L, 41L, 53L, 23L, 41L, 44L, 38L, 30L, 54L)
+print(paste(c(LETTERS, letters, &quot; &quot;, &quot;!&quot;)[hello_world], collapse = &quot;&quot;))</code></pre>
+<pre><code>## [1] &quot;Hello World!&quot;</code></pre>
+<p>P.S. Of course I did not start to count the letters by hand, but cheated a bit by creating
+this snippet and actually created the indices by:</p>
+<pre class="r"><code>match(strsplit(&quot;Hello World!&quot;, &quot;&quot;)[[1]], c(LETTERS, letters, &quot; &quot;, &quot;!&quot;))</code></pre>
+<p>P.P.S. To spice up things a bit I may also share some cooking related posts from time to
+time in case you get hungry in between your coding sessions. Also here a <code>Hello World</code>:</p>
+<div class="figure">
+<img src="Curry_Eggplants.jpg" alt="Curry Eggplants" />
+<p class="caption">Curry Eggplants</p>
+</div>
+</div>
