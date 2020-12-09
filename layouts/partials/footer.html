@@ -1,18 +1,20 @@
-{{ $script_src := "js/highlight.pack.js"}}
-{{ $css_src := "css/an-old-hope.css"}}
-        
-{{ if .Site.IsServer }}
-  {{ $script := resources.Get $script_src}}
-  {{ $styles := resources.Get $css_src }}
-  <script src="{{ $script.RelPermalink }}"></script>
-  <link rel="stylesheet" href="{{ $styles.RelPermalink }}" media="screen">
-{{ else }}
-  {{ $script := resources.Get $script_src | minify | fingerprint }}
-  {{ $styles := resources.Get $css_src | minify | fingerprint}}
-  <script src="{{ $script.RelPermalink }}"></script>
-  <link rel="stylesheet" href="{{ $styles.RelPermalink }}" integrity="{{ $styles.Data.Integrity }}" crossorigin="anonymous" media="screen" />
+{{ if .Params.useHighlightJS | default true}}
+  {{ $script_src := "js/highlight.pack.js"}}
+  {{ $css_src := "css/an-old-hope.css"}}
+    
+  {{ if .Site.IsServer }}
+    {{ $script := resources.Get $script_src}}
+    {{ $styles := resources.Get $css_src }}
+    <script src="{{ $script.RelPermalink }}"></script>
+    <link rel="stylesheet" href="{{ $styles.RelPermalink }}" media="screen">
+  {{ else }}
+    {{ $script := resources.Get $script_src | minify | fingerprint }}
+    {{ $styles := resources.Get $css_src | minify | fingerprint}}
+    <script src="{{ $script.RelPermalink }}"></script>
+    <link rel="stylesheet" href="{{ $styles.RelPermalink }}" integrity="{{ $styles.Data.Integrity }}" crossorigin="anonymous" media="screen" />
+  {{ end }}
+   <script>hljs.initHighlightingOnLoad();</script>
 {{ end }}
-<script>hljs.initHighlightingOnLoad();</script>
 
 {{ if not .Site.Params.hideFooter | default false }}
   <footer class="footer">
