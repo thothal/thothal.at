@@ -29,9 +29,11 @@ disqusShortname = "thothal"
     hideCredits = true
     hideCopyright = false
     since = 2020
+    # relativeURLS = true
+    # math = true
 
     # Git Commit in Footer, uncomment the line below to enable it.
-    commit = "https://github.com/luizdepra/hugo-coder/tree/"
+    # commit = "https://github.com/luizdepra/hugo-coder/tree/"
 
     rtl = false
 
@@ -52,7 +54,7 @@ disqusShortname = "thothal"
     enableTwemoji = true
 
     # Custom CSS
-    customCSS = []
+    customCSS = ["css/thothal.css"]
 
     # Custom SCSS
     customSCSS = []
@@ -126,7 +128,7 @@ disqusShortname = "thothal"
             [[languages.en.menu.main]]
             name = "CV"
             weight = 2
-            url = "CV/"
+            url = "cv/"
             
             [[languages.en.menu.main]]
             name = "About"
@@ -134,4 +136,4 @@ disqusShortname = "thothal"
             url = "about/"
 
 [permalinks]
-    post = "/:year/:month/:day/:slug/"
+    posts = "/:year/:month/:day/:slug/"
