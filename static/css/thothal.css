@@ -1,0 +1,12 @@
+.figure {
+   text-align: center;
+}
+
+.figure img + .caption {
+   text-align: center;
+   font-style: italic;
+}
+
+.figure img + .caption::before {
+   content: "Figure: ";
+}

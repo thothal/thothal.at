@@ -1,0 +1,10 @@
+---
+slug: about
+title: About
+---
+
+## Contact
+
+> Thorn Thaler  
+Grottenstraße 10  
+22605 Hamburg 
