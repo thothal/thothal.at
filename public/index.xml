@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>thothal.com</title>
+    <link>http://www.thothal.com/</link>
+    <description>Recent content on thothal.com</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 08 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://www.thothal.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Yet Another Coding Blog</title>
+      <link>http://www.thothal.com/2020/12/08/yet-another-coding-blog/</link>
+      <pubDate>Tue, 08 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.thothal.com/2020/12/08/yet-another-coding-blog/</guid>
+      <description>Hello WorldDuring my normal work day I spend quite some time reading coding related blog posts andskimming through questions on Stackoverflow (and - if time permits - answering some R or shiny related questions).
+When I learn about a new topic or technique it can happen that I jump from one article toanother (and more often than not get side-tracked by yet another topic 🤦️).In one of those scavenger hunts I ended up reading onBlogdown and a quote was catching my attention:</description>
+    </item>
+    
+    <item>
+      <title>Curriculum Vitae</title>
+      <link>http://www.thothal.com/cv/</link>
+      <pubDate>Fri, 04 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.thothal.com/cv/</guid>
+      <description>h2:before {content: &#34;&#34;;display: inline-block;margin-right:1%;width: 16%;height: 10px;background-color: #9CB770;}/* Definitions */dt {float: left;clear: left;width: 17%;font-weight: bold;}dd {margin-left: 17%;}p {margin-top:0;margin-bottom:7px;}/* Blockquotes */hr+blockquote {border-left: none;}body.colorscheme-dark hr+blockquote {border-left: none;}.content hr+blockquote  p {text-align:center;}A highly motivated, adaptable and fast learning Senior Data Scientist with aquenchless passion for coding and a proven track record as a coach &amp;amp; leaderinterested in opportunities where his creativity, sales and presentation talents canbe exerted in a technological field to help defining strategies tovalorize the potential of data.</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>http://www.thothal.com/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://www.thothal.com/about/</guid>
+      <description>ContactThorn Thaler
+Grottenstraße 10
+22605 Hamburg
+</description>
+    </item>
+    
+  </channel>
+</rss>
