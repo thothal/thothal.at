@@ -13,12 +13,12 @@ pygmentsCodeFences = true
 pygmentsCodeFencesGuessSyntax = true
 
 disqusShortname = "thothal"
-
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "\\.knit\\.md$", "\\.utf8\\.md$"]
 [params]
     author = "Thorn V. Thaler"
     description = "A page dedicated to my favourite C's coding and cooking"
     keywords = "data science, coding, R, shiny, cooking"
-    info = "R Aficionado and Chef"
+    info = "R Aficionado and Hobby Chef"
     avatarURL = "images/avatar_thorn.jpg"
     #gravatar = "john.doe@example.com"
     footerContent = ""
@@ -28,7 +28,7 @@ disqusShortname = "thothal"
     hideFooter = false
     hideCredits = true
     hideCopyright = false
-    since = 2020
+    since = 2022
     # relativeURLS = true
     # math = true
 
@@ -51,7 +51,7 @@ disqusShortname = "thothal"
     maxSeeAlsoItems = 5
 
     # Enable Twemoji
-    enableTwemoji = true
+    enableTwemoji = false
 
     # Custom CSS
     customCSS = ["css/thothal.css"]
@@ -134,6 +134,13 @@ disqusShortname = "thothal"
             name = "About"
             weight = 4
             url = "about/"
+
+[markup]
+    [markup.goldmark]
+        [markup.goldmark.parser]
+            WithAttribute = true
+        [markup.goldmark.renderer]
+            unsafe = true
 
 [permalinks]
     posts = "/:year/:month/:day/:slug/"
