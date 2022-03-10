@@ -52,7 +52,7 @@ already with a nice hierarchical structure.
 library(dplyr)
 library(forcats)
 titanic <- as_tibble(Titanic) %>% 
-   mutate(across(where(is.character), forcats::fct_inorder))
+   mutate(across(where(is.character), fct_inorder))
 str(titanic)
 ```
 
@@ -115,7 +115,7 @@ lvl1 <- titanic %>%
 
 lvl0 <- titanic %>% 
    summarise(value = sum(n)) %>% 
-   transmute(ids = "Total",
+   transmute(id = "Total",
              parent = "",
              value,
              label = "Total")
