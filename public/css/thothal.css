@@ -10,3 +10,46 @@
 .figure img + .caption::before {
    content: "Figure: ";
 }
+
+
+
+.CV-header:before {
+    content: "";
+    display: inline-block;
+    margin-right:1%;
+    margin-bottom: .15em;
+    width: 16%;
+    height: .4em;
+    background-color: #c0c5ce;
+}
+
+/* Definitions */
+.CV dt {
+    float: left;
+    clear: left;
+    width: 16%;
+    margin-right: 1%;
+    font-weight: bold;
+    text-align: right;
+}
+.CV dd {
+    margin-left: 17%;
+}
+
+.CV p {
+    margin-top:0;
+    margin-bottom:7px;
+}
+
+/* Blockquotes */
+.CV hr+blockquote {
+    border-left: none;
+}
+
+.colorscheme-dark .CV hr+blockquote {
+    border-left: none;
+}
+
+.content .CV hr+blockquote > p {
+   text-align:center;
+}

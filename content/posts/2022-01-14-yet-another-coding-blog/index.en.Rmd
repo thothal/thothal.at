@@ -1,7 +1,7 @@
 ---
 title: Yet Another Coding Blog
 author: Thorn Thaler
-date: '2020-12-08'
+date: '2022-01-14'
 slug: yet-another-coding-blog
 categories:
   - coding
@@ -12,6 +12,7 @@ tags:
 authors: []
 description: ''
 externalLink: ''
+series: []
 ---
 
 ## Hello World

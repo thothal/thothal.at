@@ -1,0 +1,87 @@
+---
+quote: >-
+   A highly motivated, adaptable and fast learning **Senior Data Scientist** with a 
+   quenchless passion for **coding** and a proven track record as a **coach & leader** 
+   interested in opportunities where his **creativity, sales and presentation talents** can 
+   be exerted in a technological field to help defining **strategies** to
+   valorize the **potential of data**.
+jobs:
+   - from: 2020
+     to: "present"
+     role: "Senior Data Scientist"
+     company: "Crif Bürgel"
+     city: "Hamburg"
+     country: "Germany"
+     tasks: >-
+        Score development using various Machine Learning algorithms, Data Science coach 
+        developing peers, responsible for the implementation of a harmonized, shared and 
+        reproducible workflow, development of an automatisation strategy to increase 
+        turnaround time, strategic development of KPI frameworks to support data driven 
+        decisions
+   - from: 2018
+     to: 2019
+     role: "Lead Connected Kitchen for Ambient Food"
+     company: "Nestlé Product Technology Center"
+     city: "Singen"
+     country: "Germany"
+     tasks: >-
+        Scouting and testing of connected kitchen devices, definition of the connected 
+        kitchen strategy, assessment of Machine Learning algorithm possibilities for new 
+        business models and services
+   - from: 2014
+     to: 2019
+     role: "Senior Data Scientist"
+     company: "Nestlé Product Technology Center"
+     city: "Singen"
+     country: "Germany"
+     tasks: >-
+        Coordination and training of junior Data Scientists, programming of a global Shiny 
+        tool to automatise Nestlé’s consumer testing, statistical consultancy of R&D projects, 
+        development of predictive models and tools
+   - from: 2014
+     to: 2018
+     role: "Lead of Product Improvement Modelling for Excellence in Food"
+     company: "Nestlé Product Technology Center"
+     city: "Singen"
+     country: "Germany"
+     tasks: >-
+        Responsible for the global roll out of a consumer centric and data driven approach to
+        translate consumer liking into product characteristics, definition of the strategy, 
+        coordination and coaching of teams in Singapore, Shanghai and India to contribute to 
+        the defined strategy, development of the methodology’s next generation to incorporate
+        communication effects
+   - from: 2011
+     to: 2013
+     role: "Leadership Team Goal Alignment Pillar"
+     company: "Nestlé Research Center"
+     city: "Lausanne"
+     country: "Switzerland"
+     tasks: >-
+        Certified Six Sigma Green Belt, organization and facilitation of workshops related to
+        problem solving, definition and monitoring of Key Performance Indicators, responsible
+        for the rollout of Goal Alignment methodology in Nestlé’s biggest research facility
+   - from: 2011
+     to: 2013
+     role: "Data Scientist"
+     company: "Nestlé Research Center"
+     city: "Lausanne"
+     country: "Switzerland"
+     tasks: >-
+        Development of predictive models to estimate effects of process and recipe parameters
+        on key sensory and performance indicators, statistical modelling using generalized 
+        linear and linear (mixed) models, development of an R library for modeling and data
+        visualization, contribution to scientific papers, training of employees in basic 
+        statistical methods, supervision and coaching of interns, leader of multivariate data 
+        analysis pillar in the Process Analytical Technology R&D network
+   - from: 2010
+     to: 2011
+     role: "Junior Data Scientist"
+     company: "Nestlé Research Center"
+     city: "Lausanne"
+     country: "Switzerland"
+     tasks: >-
+        Multivariate data analysis in the field of sensory science, analysis of consumer 
+        tests to determine optimal product characteristics, data visualisation to help 
+        product developpers to derive data based decisions, Design-of-Experiments to plan and
+        analyse trials for projects related to food research
+---

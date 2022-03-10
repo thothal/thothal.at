@@ -3,46 +3,11 @@ title: Curriculum Vitae
 author: Thorn Thaler
 date: '2020-12-04'
 slug: CV
+customClass: 'CV'
+output: 
+   blogdown::html_page:
+      section_divs: false
 ---
-
-<style>
-h2:before {
-    content: "";
-    display: inline-block;
-    margin-right:1%;
-    width: 16%;
-    height: 10px;
-    background-color: #9CB770;
-}
-
-/* Definitions */
-dt {
-    float: left;
-    clear: left;
-    width: 17%;
-    font-weight: bold;
-}
-dd {
-    margin-left: 17%;
-}
-p {
-    margin-top:0;
-    margin-bottom:7px;
-}
-
-/* Blockquotes */
-hr+blockquote {
-    border-left: none;
-}
-
-body.colorscheme-dark hr+blockquote {
-    border-left: none;
-}
-
-.content hr+blockquote > p {
-   text-align:center;
-}
-</style>
 
 ----
 
@@ -54,20 +19,141 @@ valorize the **potential of data**.
 
 ----
 
-## Work Experience
+## Work Experience {.CV-header}
 
-1940-1980
-:   *CEO of Aperture Science* (Upper Michigan, USA).
+2020 – present
+:    *Senior Data Scientist* (Crif Bürgel, Hamburg, Germany)
 
-    Supervised the development of various gels, and of a Portable
-    Quantum Tunneling Device. 
+     Score development using various Machine Learning algorithms, Data Science coach 
+     developing peers, responsible for the implementation of a harmonized, shared and 
+     reproducible workflow, development of an automatisation strategy to increase 
+     turnaround time, strategic development of KPI frameworks to support data driven 
+     decisions
+     
+2018 – 2019 
+:    *Lead Connected Kitchen for Ambient Food* (Nestlé Product Technology Center, Singen, 
+     Germany)
+     
+     Scouting and testing of connected kitchen devices, definition of the connected 
+     kitchen strategy, assessment of Machine Learning algorithm possibilities for new 
+     business models and services
+     
+2014 – 2019
+:    *Senior Data Scientist* (Nestlé Product Technology Center, Singen, Germany)
 
-## Education
+     Coordination and training of junior Data Scientists, programming of a global Shiny 
+     tool to automatise Nestlé’s consumer testing, statistical consultancy of R&D projects, 
+     development of predictive models and tools
+     
+2014 – 2018
+:    *Lead of Product Improvement Modelling for Excellence in Food* (Nestlé Product 
+     Technology Center, Singen, Germany)
+     
+     Responsible for the global roll out of a consumer centric and data driven approach to
+     translate consumer liking into product characteristics, definition of the strategy, 
+     coordination and coaching of teams in Singapore, Shanghai and India to contribute to 
+     the defined strategy, development of the methodology’s next generation to incorporate
+     communication effects
+     
+2011 – 2013
+:    *Leadership Team Goal Alignment Pillar* (Nestlé Research Center, Lausanne, 
+     Switzerland)
+     
+     Certified Six Sigma Green Belt, organization and facilitation of workshops related to
+     problem solving, definition and monitoring of Key Performance Indicators, responsible
+     for the rollout of Goal Alignment methodology in Nestlé’s biggest research facility
+     
+2011 – 2013
+:    *Data Scientist* (Nestlé Research Center, Lausanne, Switzerland)
 
-## Skills
+     Development of predictive models to estimate effects of process and recipe parameters
+     on key sensory and performance indicators, statistical modelling using generalized 
+     linear and linear (mixed) models, development of an R library for modeling and data
+     visualization, contribution to scientific papers, training of employees in basic 
+     statistical methods, supervision and coaching of interns, leader of multivariate data 
+     analysis pillar in the Process Analytical Technology R&D network
+     
+2010 – 2011
+:    *Junior Data Scientist* (Nestlé Research Center, Lausanne, Switzerland)
 
-## Languages
+     Multivariate data analysis in the field of sensory science, analysis of consumer 
+     tests to determine optimal product characteristics, data visualisation to help 
+     product developpers to derive data based decisions, Design-of-Experiments to plan and
+     analyse trials for projects related to food research
 
-## Awards
+## Education {.CV-header}
 
-## Interests
+2008 - 2009
+:    *Master's programme Technical Mathematics* (University of Technology, Graz, Austria)
+
+     * Grade: *Summa cum Laude*
+     * Major field of study: Operations Research and Statistics
+     * Master’s thesis: The Extended-Quasi-Likelihood-Function in Generalized Linear Models
+
+2006 - 2007
+:    *ERASMUS* (Helsinki University of Technology, Espoo, Finland)
+
+     * Exchange student
+     * Research assistant at the Laboratory for Theoretical Computer Science
+     
+1999 - 2008
+:    *Bachelor’s degree Technical Mathematics* (University of Technology, Graz, Austria)
+
+     * Bachelor’s thesis 1: Analysis of Particular Matter in Graz Using Mixed Probability Models
+     * Bachelos’s thesis 2: Cateorical Data Analysis
+
+## Skills {.CV-header}
+
+Statistical
+:    * Strong background in modelling [inter alia (Logistic) Regression, 
+       (Generalized) Linear (Mixed) Models]
+     * Proficiency in Clustering [e.g. kmeans, hierarchical] and Random Forests
+     
+Programming
+:     * Outstanding experience in R and Shiny (I contributed code to the base R 
+       implementation and I am an active contributor on 
+       [Stack Overflow]((https://stackoverflow.com/search?q=%5Br%5D+or+%5Bshiny%5D+user%3A4125751+is%3Aanswer)))
+      * Strong believer of literate programming (RMarkdown), interactive reporting (Shiny)
+        and non static graphs (plotly)
+      * At easy with SQL and basic command of Python
+      
+Selected Trainings
+:     * *Certified DMAIC Green Belt*: I ran several problem solving activities using the Six
+         Sigma methodology
+      * *Train the Trainer*: I planned, prepared and executed several trainings for adult
+        learners (e.g. training on coaching, basic and advanced statistical methods, R
+        programming)
+      * *Everyday Coaching*: I coached and developed peers and managers in their everyday
+        job using their own potential
+
+## Languages {.CV-header}
+
+German
+:     Mother tongue
+
+English
+:     Fluent
+
+French
+:     Advanced
+
+## Awards {.CV-header}
+
+2016
+:     *Lean Award* awarded by the leadership team of PTC Singen for exemplary usage of LEAN
+      tools to accelerate project execution.
+     
+2009
+:     *Best Master’s Thesis 2009 in the field of statistics* awarded by the Austrian
+      Statistical Society
+
+## Interests {.CV-header}
+
+Culinary
+:     Enthusiastic home brewer and hobby cook, who loves to submerge into the cuisines 
+      of this world
+     
+Hobbies
+:     Reading, Board Games, Sailing
+
+
