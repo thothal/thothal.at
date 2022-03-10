@@ -1,0 +1,149 @@
+---
+title: Aggregate Data with Nested Groups
+author: Thorn Thaler
+date: '2022-03-10'
+slug: aggregate-data-with-nested-groups
+categories:
+  - coding
+tags:
+  - tidyverse
+  - loops
+authors: []
+description: ''
+externalLink: ''
+series: []
+editor_options: 
+  chunk_output_type: console
+---
+
+## A Short General Primer on Loops
+
+In my daily programming I barely use any base `for` loops. I used to rely on `lapply` 
+and friends a lot, then switched to the `plyr` family of apply functions and eventually
+ended up using the `purr::map_*` family of functions.
+
+There is a bit of overhead involved in `map`and `[lvs]apply` can be faster / more efficient, 
+but I do like the verbosity of `map` and friends as well as the possibility to use
+lambda functions via `~`^[[R 4.1](https://cran.r-project.org/doc/manuals/r-release/NEWS.html) 
+added also support for lambdas. Yet it requires some more typing and my current R Studio 
+version `1.4.1103` does not recognize the syntax yet.]. 
+Especially the predictability of the result as opposed to `sapply` for instance is a clear
+plus. Also, if you want the apply function to return something else than a list the 
+`map_*` variants become rather handy.
+
+Compare:
+
+```{r base-apply, error = TRUE}
+## using the R 4.1. anon function syntax
+(res <- lapply(1:3, \(x) x + 1))
+
+## is typesafe but will always return a list, thus this will throw an error
+sum(res)
+
+## sapply can be a remedy
+(res <- sapply(1:3, \(x) x + 1))
+sum(res)
+
+## however output format of sapply is not always the same
+sapply(1:3, \(x) c(1, x)) ## a matrix
+sapply(1:3, seq_len)      ## a list
+sapply(1:3, \(x) x + 1)   ## a vector
+```
+
+to:
+
+```{r purrr-apply, message = FALSE, error = TRUE}
+library(purrr)
+
+## map_* enforces you to return the right type
+
+map_int(1:3, ~ .x + 1L)
+map(1:3, seq_len)
+map_dfr(1:3, ~ data.frame(x = .x))
+
+## type safety is taken really seriously:
+##   1 is a numeric, thus . + 1 is a numeric and __not__ an int
+map_int(1:3, ~ .x + 1)
+```
+
+To conclude: `map` adds verbosity and type safety and allows for `tidyverse` anonymous 
+functions. Enough reasons for me to completely rely on `map_` and friends^[`walk` for 
+instance, when I am only interested in side effects.].
+
+## Revisit [Sunburst Graphs](/2022/03/04/how-how-to-change-the-colors-in-a-sunburst-graph/)
+
+In my post on how to color sunbursts graphs, I used a rather tedious and lengthy way of
+bringing the data into the right format. We can use `purrr::accumulate` to generalize the 
+idea while saving a lot of copy-pasted code:
+
+```{r reduce-for-the-win, message = FALSE}
+library(tidyr)
+library(forcats)
+library(dplyr)
+titanic <- as_tibble(Titanic) %>% 
+   mutate(across(where(is.character), fct_inorder))
+
+prepare_sunburst_data <- function(data, ..., n = n(), total_name = "Total") {
+   n <- enquo(n)
+   grps <- enquos(...)
+   data <- data %>% group_by(!!!grps) # [1]
+   calc_margins <- function(.data) { # [3]
+      grps <- .data %>% 
+         groups()
+      agg <- .data %>% 
+         summarise(margin = sum(!!n), .groups = "drop") 
+      if (length(grps)) {
+         agg <- agg %>% 
+            unite("id", !!!grps, remove = FALSE) %>% 
+            mutate(label = !!grps[[1L]] %>% as.character())
+         par_grps <- tail(grps, -1L)
+         if (length(par_grps)) {
+            agg <- agg %>% 
+               unite("parent", !!!par_grps)
+         } else {
+            agg <- agg %>% 
+               mutate(parent = total_name)
+         }
+      } else {
+         agg <- agg %>% 
+            mutate(label = total_name, id = total_name, parent = "")
+      }
+      agg %>% 
+         select(id, parent, label, margin)
+   }
+   accumulate(grps, ~ .x %>% ungroup(!!.y), .init = data) %>%  # [2]
+      map_dfr(calc_margins)
+}
+
+(sunburst_data <- prepare_sunburst_data(titanic, Survived, Sex, Age, Class, n = n))
+```
+
+How does the function work?
+
+1. We use `enquos` to enquote all passed (via `...`) grouping variables and add these 
+grouping variables to the data (`# [1]`).
+1. Then, we use `accumulate` to create a list of data frames where each element uses one
+grouping level *less*. That is int eh above example, the first element groups according to
+`Survived`, `Sex`, `Age` and `Class`, the second one drops `Survived` the third one drops 
+`Sex` and so on (`# [2]`).
+1. Now, we can simply apply our `calc_margins` (`# [3]`) function, which uses the given 
+summary function and creates meaningful ids and labels and sets the parent reference 
+accordingly.
+
+And as we are better in juding visuals rather than tables, here is the sunburst graph 
+again to show that the data created by `prepare_sunburst_data` is indeed the same as the
+approach by hand:
+
+```{r sunburst}
+library(plotly)
+sunburst_data %>% 
+   plot_ly() %>% 
+   add_trace(ids = ~ id,
+             labels = ~ label,
+             parents = ~ parent,
+             values = ~ margin,
+             type = "sunburst",
+             branchvalues = "total")
+```
+
+

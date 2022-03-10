@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="en">
+
+    <meta name="author" content="Thorn V. Thaler">
+    <meta name="description" content="A Short General Primer on LoopsIn my daily programming I barely use any base for loops. I used to rely on lapplyand friends a lot, then switched to the plyr family of apply functions and eventuallyended up using the purr::map_* family of functions.
+There is a bit of overhead involved in mapand [lvs]apply can be faster / more efficient,but I do like the verbosity of map and friends as well as the possibility to uselambda functions via ~1.">
+    <meta name="keywords" content="data science, coding, R, shiny, cooking">
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Aggregate Data with Nested Groups"/>
+<meta name="twitter:description" content="A Short General Primer on LoopsIn my daily programming I barely use any base for loops. I used to rely on lapplyand friends a lot, then switched to the plyr family of apply functions and eventuallyended up using the purr::map_* family of functions.
+There is a bit of overhead involved in mapand [lvs]apply can be faster / more efficient,but I do like the verbosity of map and friends as well as the possibility to uselambda functions via ~1."/>
+
+    <meta property="og:title" content="Aggregate Data with Nested Groups" />
+<meta property="og:description" content="A Short General Primer on LoopsIn my daily programming I barely use any base for loops. I used to rely on lapplyand friends a lot, then switched to the plyr family of apply functions and eventuallyended up using the purr::map_* family of functions.
+There is a bit of overhead involved in mapand [lvs]apply can be faster / more efficient,but I do like the verbosity of map and friends as well as the possibility to uselambda functions via ~1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/" />
+<meta property="article:published_time" content="2022-03-10T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-03-10T00:00:00+00:00" />
+
+
+    <title>
+  Aggregate Data with Nested Groups · thothal.com
+</title>
+
+    
+      <link rel="canonical" href="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fork-awesome/1.1.7/css/fork-awesome.min.css" integrity="sha512-9QjPqX/aCNwEQDyMqqMluNOSsHxTwOJNO3d4m5aUeNbyOPm8RcBA5hCUhvGmKFtSmQYGajqPopGtD60FWiWUwg==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" />
+    
+      
+      
+      <link rel="stylesheet" href="/css/coder.min.f01c647a0d25b40da992a37c3376291185eed8a50ced8c26cc2c0bcfe38c97df.css" integrity="sha256-8Bxkeg0ltA2pkqN8M3YpEYXu2KUM7YwmzCwLz&#43;OMl98=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+      
+        
+        
+        <link rel="stylesheet" href="/css/coder-dark.min.126ad3988d46bdae6217a11105b53c9662bca05f39d42d3c0fb366919d334620.css" integrity="sha256-EmrTmI1Gva5iF6ERBbU8lmK8oF851C08D7NmkZ0zRiA=" crossorigin="anonymous" media="screen" />
+      
+    
+
+    
+      <link rel="stylesheet" href="/css/thothal.css" />
+    
+
+    
+
+    <link rel="icon" type="image/png" href="/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/images/favicon-16x16.png" sizes="16x16">
+
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+    
+
+    <meta name="generator" content="Hugo 0.79.0" />
+  </head>
+
+  
+  
+    
+  
+  <body class="colorscheme-auto"
+        onload=""
+  >
+    
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="/">
+      thothal.com
+    </a>
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/cv/">CV</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Aggregate Data with Nested Groups</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+              <time datetime='2022-03-10T00:00:00Z'>
+                March 10, 2022
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa fa-clock-o" aria-hidden="true"></i>
+              5-minute read
+            </span>
+          </div>
+          
+          <div class="categories">
+  <i class="fa fa-folder" aria-hidden="true"></i>
+    <a href="/categories/coding/">coding</a></div>
+
+          <div class="tags">
+  <i class="fa fa-tag" aria-hidden="true"></i>
+    <a href="/tags/tidyverse/">tidyverse</a>
+      <span class="separator">•</span>
+    <a href="/tags/loops/">loops</a></div>
+
+        </div>
+      </header>
+
+      <div>
+        
+        
+<script src="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/index.en_files/header-attrs/header-attrs.js"></script>
+<script src="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/index.en_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/index.en_files/plotly-binding/plotly.js"></script>
+<script src="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/index.en_files/typedarray/typedarray.min.js"></script>
+<script src="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/index.en_files/jquery/jquery.min.js"></script>
+<link href="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/index.en_files/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/index.en_files/crosstalk/js/crosstalk.min.js"></script>
+<link href="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/index.en_files/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/index.en_files/plotly-main/plotly-latest.min.js"></script>
+
+
+<div id="a-short-general-primer-on-loops" class="section level2">
+<h2>A Short General Primer on Loops</h2>
+<p>In my daily programming I barely use any base <code>for</code> loops. I used to rely on <code>lapply</code>
+and friends a lot, then switched to the <code>plyr</code> family of apply functions and eventually
+ended up using the <code>purr::map_*</code> family of functions.</p>
+<p>There is a bit of overhead involved in <code>map</code>and <code>[lvs]apply</code> can be faster / more efficient,
+but I do like the verbosity of <code>map</code> and friends as well as the possibility to use
+lambda functions via <code>~</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.
+Especially the predictability of the result as opposed to <code>sapply</code> for instance is a clear
+plus. Also, if you want the apply function to return something else than a list the
+<code>map_*</code> variants become rather handy.</p>
+<p>Compare:</p>
+<pre class="r"><code>## using the R 4.1. anon function syntax
+(res &lt;- lapply(1:3, \(x) x + 1))</code></pre>
+<pre><code>## [[1]]
+## [1] 2
+## 
+## [[2]]
+## [1] 3
+## 
+## [[3]]
+## [1] 4</code></pre>
+<pre class="r"><code>## is typesafe but will always return a list, thus this will throw an error
+sum(res)</code></pre>
+<pre><code>## Error in sum(res): invalid &#39;type&#39; (list) of argument</code></pre>
+<pre class="r"><code>## sapply can be a remedy
+(res &lt;- sapply(1:3, \(x) x + 1))</code></pre>
+<pre><code>## [1] 2 3 4</code></pre>
+<pre class="r"><code>sum(res)</code></pre>
+<pre><code>## [1] 9</code></pre>
+<pre class="r"><code>## however output format of sapply is not always the same
+sapply(1:3, \(x) c(1, x)) ## a matrix</code></pre>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    1    1
+## [2,]    1    2    3</code></pre>
+<pre class="r"><code>sapply(1:3, seq_len)      ## a list</code></pre>
+<pre><code>## [[1]]
+## [1] 1
+## 
+## [[2]]
+## [1] 1 2
+## 
+## [[3]]
+## [1] 1 2 3</code></pre>
+<pre class="r"><code>sapply(1:3, \(x) x + 1)   ## a vector</code></pre>
+<pre><code>## [1] 2 3 4</code></pre>
+<p>to:</p>
+<pre class="r"><code>library(purrr)
+
+## map_* enforces you to return the right type
+
+map_int(1:3, ~ .x + 1L)</code></pre>
+<pre><code>## [1] 2 3 4</code></pre>
+<pre class="r"><code>map(1:3, seq_len)</code></pre>
+<pre><code>## [[1]]
+## [1] 1
+## 
+## [[2]]
+## [1] 1 2
+## 
+## [[3]]
+## [1] 1 2 3</code></pre>
+<pre class="r"><code>map_dfr(1:3, ~ data.frame(x = .x))</code></pre>
+<pre><code>##   x
+## 1 1
+## 2 2
+## 3 3</code></pre>
+<pre class="r"><code>## type safety is taken really seriously:
+##   1 is a numeric, thus . + 1 is a numeric and __not__ an int
+map_int(1:3, ~ .x + 1)</code></pre>
+<pre><code>## Error: Can&#39;t coerce element 1 from a double to a integer</code></pre>
+<p>To conclude: <code>map</code> adds verbosity and type safety and allows for <code>tidyverse</code> anonymous
+functions. Enough reasons for me to completely rely on <code>map_</code> and friends<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+</div>
+<div id="revisit-sunburst-graphs" class="section level2">
+<h2>Revisit <a href="/2022/03/04/how-how-to-change-the-colors-in-a-sunburst-graph/">Sunburst Graphs</a></h2>
+<p>In my post on how to color sunbursts graphs, I used a rather tedious and lengthy way of
+bringing the data into the right format. We can use <code>purrr::accumulate</code> to generalize the
+idea while saving a lot of copy-pasted code:</p>
+<pre class="r"><code>library(tidyr)
+library(forcats)
+library(dplyr)
+titanic &lt;- as_tibble(Titanic) %&gt;% 
+   mutate(across(where(is.character), fct_inorder))
+
+prepare_sunburst_data &lt;- function(data, ..., n = n(), total_name = &quot;Total&quot;) {
+   n &lt;- enquo(n)
+   grps &lt;- enquos(...)
+   data &lt;- data %&gt;% group_by(!!!grps) # [1]
+   calc_margins &lt;- function(.data) { # [3]
+      grps &lt;- .data %&gt;% 
+         groups()
+      agg &lt;- .data %&gt;% 
+         summarise(margin = sum(!!n), .groups = &quot;drop&quot;) 
+      if (length(grps)) {
+         agg &lt;- agg %&gt;% 
+            unite(&quot;id&quot;, !!!grps, remove = FALSE) %&gt;% 
+            mutate(label = !!grps[[1L]] %&gt;% as.character())
+         par_grps &lt;- tail(grps, -1L)
+         if (length(par_grps)) {
+            agg &lt;- agg %&gt;% 
+               unite(&quot;parent&quot;, !!!par_grps)
+         } else {
+            agg &lt;- agg %&gt;% 
+               mutate(parent = total_name)
+         }
+      } else {
+         agg &lt;- agg %&gt;% 
+            mutate(label = total_name, id = total_name, parent = &quot;&quot;)
+      }
+      agg %&gt;% 
+         select(id, parent, label, margin)
+   }
+   accumulate(grps, ~ .x %&gt;% ungroup(!!.y), .init = data) %&gt;%  # [2]
+      map_dfr(calc_margins)
+}
+
+(sunburst_data &lt;- prepare_sunburst_data(titanic, Survived, Sex, Age, Class, n = n))</code></pre>
+<pre><code>## # A tibble: 61 x 4
+##    id                  parent           label margin
+##    &lt;chr&gt;               &lt;chr&gt;            &lt;chr&gt;  &lt;dbl&gt;
+##  1 No_Male_Child_1st   Male_Child_1st   No         0
+##  2 No_Male_Child_2nd   Male_Child_2nd   No         0
+##  3 No_Male_Child_3rd   Male_Child_3rd   No        35
+##  4 No_Male_Child_Crew  Male_Child_Crew  No         0
+##  5 No_Male_Adult_1st   Male_Adult_1st   No       118
+##  6 No_Male_Adult_2nd   Male_Adult_2nd   No       154
+##  7 No_Male_Adult_3rd   Male_Adult_3rd   No       387
+##  8 No_Male_Adult_Crew  Male_Adult_Crew  No       670
+##  9 No_Female_Child_1st Female_Child_1st No         0
+## 10 No_Female_Child_2nd Female_Child_2nd No         0
+## # ... with 51 more rows</code></pre>
+<p>How does the function work?</p>
+<ol style="list-style-type: decimal">
+<li>We use <code>enquos</code> to enquote all passed (via <code>...</code>) grouping variables and add these
+grouping variables to the data (<code># [1]</code>).</li>
+<li>Then, we use <code>accumulate</code> to create a list of data frames where each element uses one
+grouping level <em>less</em>. That is int eh above example, the first element groups according to
+<code>Survived</code>, <code>Sex</code>, <code>Age</code> and <code>Class</code>, the second one drops <code>Survived</code> the third one drops
+<code>Sex</code> and so on (<code># [2]</code>).</li>
+<li>Now, we can simply apply our <code>calc_margins</code> (<code># [3]</code>) function, which uses the given
+summary function and creates meaningful ids and labels and sets the parent reference
+accordingly.</li>
+</ol>
+<p>And as we are better in juding visuals rather than tables, here is the sunburst graph
+again to show that the data created by <code>prepare_sunburst_data</code> is indeed the same as the
+appraoch by hand:</p>
+<pre class="r"><code>library(plotly)</code></pre>
+<pre><code>## Loading required package: ggplot2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>sunburst_data %&gt;% 
+   plot_ly() %&gt;% 
+   add_trace(ids = ~ id,
+             labels = ~ label,
+             parents = ~ parent,
+             values = ~ margin,
+             type = &quot;sunburst&quot;,
+             branchvalues = &quot;total&quot;)</code></pre>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"visdat":{"2a8429be4d":["function () ","plotlyVisDat"]},"cur_data":"2a8429be4d","attrs":{"2a8429be4d":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"ids":{},"labels":{},"parents":{},"values":{},"type":"sunburst","branchvalues":"total","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"ids":["No_Male_Child_1st","No_Male_Child_2nd","No_Male_Child_3rd","No_Male_Child_Crew","No_Male_Adult_1st","No_Male_Adult_2nd","No_Male_Adult_3rd","No_Male_Adult_Crew","No_Female_Child_1st","No_Female_Child_2nd","No_Female_Child_3rd","No_Female_Child_Crew","No_Female_Adult_1st","No_Female_Adult_2nd","No_Female_Adult_3rd","No_Female_Adult_Crew","Yes_Male_Child_1st","Yes_Male_Child_2nd","Yes_Male_Child_3rd","Yes_Male_Child_Crew","Yes_Male_Adult_1st","Yes_Male_Adult_2nd","Yes_Male_Adult_3rd","Yes_Male_Adult_Crew","Yes_Female_Child_1st","Yes_Female_Child_2nd","Yes_Female_Child_3rd","Yes_Female_Child_Crew","Yes_Female_Adult_1st","Yes_Female_Adult_2nd","Yes_Female_Adult_3rd","Yes_Female_Adult_Crew","Male_Child_1st","Male_Child_2nd","Male_Child_3rd","Male_Child_Crew","Male_Adult_1st","Male_Adult_2nd","Male_Adult_3rd","Male_Adult_Crew","Female_Child_1st","Female_Child_2nd","Female_Child_3rd","Female_Child_Crew","Female_Adult_1st","Female_Adult_2nd","Female_Adult_3rd","Female_Adult_Crew","Child_1st","Child_2nd","Child_3rd","Child_Crew","Adult_1st","Adult_2nd","Adult_3rd","Adult_Crew","1st","2nd","3rd","Crew","Total"],"labels":["No","No","No","No","No","No","No","No","No","No","No","No","No","No","No","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Male","Male","Male","Male","Male","Male","Male","Male","Female","Female","Female","Female","Female","Female","Female","Female","Child","Child","Child","Child","Adult","Adult","Adult","Adult","1st","2nd","3rd","Crew","Total"],"parents":["Male_Child_1st","Male_Child_2nd","Male_Child_3rd","Male_Child_Crew","Male_Adult_1st","Male_Adult_2nd","Male_Adult_3rd","Male_Adult_Crew","Female_Child_1st","Female_Child_2nd","Female_Child_3rd","Female_Child_Crew","Female_Adult_1st","Female_Adult_2nd","Female_Adult_3rd","Female_Adult_Crew","Male_Child_1st","Male_Child_2nd","Male_Child_3rd","Male_Child_Crew","Male_Adult_1st","Male_Adult_2nd","Male_Adult_3rd","Male_Adult_Crew","Female_Child_1st","Female_Child_2nd","Female_Child_3rd","Female_Child_Crew","Female_Adult_1st","Female_Adult_2nd","Female_Adult_3rd","Female_Adult_Crew","Child_1st","Child_2nd","Child_3rd","Child_Crew","Adult_1st","Adult_2nd","Adult_3rd","Adult_Crew","Child_1st","Child_2nd","Child_3rd","Child_Crew","Adult_1st","Adult_2nd","Adult_3rd","Adult_Crew","1st","2nd","3rd","Crew","1st","2nd","3rd","Crew","Total","Total","Total","Total",""],"values":[0,0,35,0,118,154,387,670,0,0,17,0,4,13,89,3,5,11,13,0,57,14,75,192,1,13,14,0,140,80,76,20,5,11,48,0,175,168,462,862,1,13,31,0,144,93,165,23,6,24,79,0,319,261,627,885,325,285,706,885,2201],"type":"sunburst","branchvalues":"total","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(255,255,255,1)"}},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><a href="https://cran.r-project.org/doc/manuals/r-release/NEWS.html">R 4.1</a>
+added also support for lambdas. Yet it requires some more typing and my current R Studio
+version <code>1.4.1103</code> does not recognize the syntax yet.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><code>walk</code> for
+instance, when I am only interested in side effects.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "thothal" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        
+        
+      </footer>
+    </article>
+
+    
+  </section>
+
+      </div>
+
+      
+  
+  
+    
+  
+    
+    
+    <script src="/js/highlight.pack.min.f042c757bd743d54982a648e80d915b4ff703aff5ed0269ad4f3b1c27688fa15.js"></script>
+    <link rel="stylesheet" href="/css/an-old-hope.min.12419941c34ab73dcfe9d224f09bef01f70bad31c8cf61b245a27ab1fbaf784f.css" integrity="sha256-EkGZQcNKtz3P6dIk8JvvAfcLrTHIz2GyRaJ6sfuveE8=" crossorigin="anonymous" media="screen" />
+  
+   <script>hljs.initHighlightingOnLoad();</script>
+
+
+
+  <footer class="footer">
+    <section class="container">
+      
+      
+        ©
+        
+        2022
+         Thorn V. Thaler 
+      
+      
+      
+    </section>
+  </footer>
+
+
+    </main>
+
+    
+      
+        
+        <script src="/js/dark-mode.min.0213e1773e6d1c5a644f847c67a6f8abac49a3776e2976f6008038af8c5b76a1.js"></script>
+      
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+  </body>
+
+</html>
