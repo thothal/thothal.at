@@ -1,0 +1,141 @@
+---
+title: How to Use Fully Qualified Tablenames in Dbplyr
+author: Thorn Thaler
+date: '2022-03-11'
+slug: how-to-use-fully-qualified-tablenames-in-dbplyr
+categories:
+  - coding
+tags:
+  - dbplyr
+  - database
+  - SQL
+authors: []
+description: ''
+externalLink: ''
+series: []
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="sql-databases" class="section level2">
+<h2>SQL Databases</h2>
+<p>I have only a working knowledge of databases and also more from a theoretical point of
+view rather than a deep understanding of the details of the respective implementation.
+That is, I know what normalization is (and why it is a good thing) and how to do <code>SELECT</code>
+or <code>JOIN</code> queries, but when it comes to the technical details of the different SQL
+flavors my knowledge dwindles away.</p>
+<p>When I started my new job, I suddenly had to work with a huge ecosystem of databases and
+I had to quickly catch up. We have a plethora of different databases hosted on different
+servers and I learned that there is something like a <code>schema</code> and that tables (I rather
+should say objects, because it is not only tables) can (should?) be addressed by <code>[InstanceName].DatabaseName.SchemaName.ObjectName</code>. I also
+learned that sometimes SQL does not allow to specify the <code>DatabaseName</code> of this fully
+qualified address (try <code>CREATE db.schema.name</code> and you will get an error) and a thing or
+two more about databases.</p>
+<p>As we are lots of colleagues working on the (Same) databases I started to use custom
+schemata for my tables, procedures and views. I thought of schemata as something like a
+namespace and depending on the SQL client you are using they are also nicely visually
+grouped. Additionally, at some point our Database Administrators (DBAs) decided that the
+standard schema is <strong>not</strong> <code>dbo</code> anymore, but a personalized one. That is, if I do not
+specify the schema explicitly my objects are stored in the
+schema <code>OURDOMAIN\myusername</code>.</p>
+<p>I guess the reasoning for this change was to identify more easily who is the owner of an
+object (or at least to make that visible to non DBAs), but of course it is a nightmare to
+type and you have to quote the schema via <code>db.[OURDOMAIN\myusername].object</code>.</p>
+<p>To make a long story short, I had to deal with schemata and databases from day 1 on. In
+the beginning that was not a big deal, as I was primarily working with an SQL Client
+(SQL Server Management Studio (SSMS), admittedly a bit more than just a client). However,
+at some point I found the workflow a bit cumbersome to say the least:</p>
+<ol style="list-style-type: decimal">
+<li>Get data from SQL via SSMS.</li>
+<li>Store it in a flat file.</li>
+<li>Analyze the data in R.</li>
+</ol>
+<p>Not only is it a pain in the neck (for me) to manipulate the data in SQL with the same
+efficiency as I would do in R, but also it is always incredibly difficult to gte data
+out of SQL and into a flat file. Not even mentioning the problems which may arise from
+stale data. Enters <code>DBI</code> abd <code>dbplyr</code>.</p>
+</div>
+<div id="using-r-to-access-data" class="section level2">
+<h2>Using R to Access Data</h2>
+<p>With <a href="https://dbi.r-dbi.org/"><code>DBI</code></a> as a general framework and
+<a href="https://dbplyr.tidyverse.org/"><code>dbplyr</code></a> as a database backend for
+<a href="https://dplyr.tidyverse.org/"><code>dplyr</code></a> I could marry the two worlds and I did not need
+to leave my beloved RStudio environment for doing the end-to-end analysis.</p>
+<p>I had, however, a rather steep learning curve (thanks
+<a href="https://stackoverflow.com/">StackOverflow</a> 💖) until I figured how to address tables
+properly with their fully qualified name and I want to share some insights here:</p>
+<pre class="r"><code>library(DBI)
+library(dbplyr)
+library(dplyr)
+
+con &lt;- dbConnect(odbc::odbc(), &quot;my.database.server&quot;)
+
+## 1. Use DBI::d 
+tbl(con, Id(catalog = &quot;mydatabase&quot;, schema = &quot;myschema&quot;, table = &quot;mytable&quot;))
+
+## actually names are ignored
+tbl(con, Id(database = &quot;mydatabase&quot;, middle_name = &quot;myschema&quot;, object = &quot;mytable&quot;))
+
+## as long as all are named
+tbl(con, Id(&quot;mydatabase&quot;, &quot;myschema&quot;, &quot;mytable&quot;))
+## Error: All arguments to Id() must be named.
+
+## We can check that it is all properly translated to
+## &lt;SQL&gt;
+## SELECT *
+## FROM &quot;mydatabase&quot;.&quot;myschema&quot;.&quot;mytable&quot;
+
+## 2. Use dbplyr::in_schema - however, need to provide database name 
+## as part of &quot;schema&quot; and need to quote it
+tbl(con, in_schema(sql(&quot;mydatabase.myschema&quot;), &quot;mytable&quot;))
+
+## this won&#39;t work
+tbl(con, in_schema(&quot;mydatabase.myschema&quot;, &quot;mytable&quot;))
+
+## the error message also shows why, if you do not escape it is seen as one schema
+## &lt;SQL&gt; 
+## SELECT *
+## FROM &quot;mydatabase.myschema&quot;.&quot;mytable&quot;
+
+
+## 3. Use dbplyr::ident_q
+tbl(con, ident_q(&quot;mydatabase.myschema.mytable&quot;))
+
+## note the _q version, ident would __not__ do
+tbl(con, ident(&quot;mydatabase.myschema.mytable&quot;))
+
+## again compare the generated SQLS
+## ident_q:
+##   &lt;SQL&gt;
+##   SELECT *
+##   FROM mydatabase.myschema.mytable
+## ident:
+##   &lt;SQL&gt;
+##   SELECT *
+##   FROM &quot;mydatabase.myschema.mytable&quot;</code></pre>
+<p>To spice things a bit up, if you are using other querying functions like for instance
+<code>DBI::dbReadTable</code> you do not have the same options, basically with <code>DBI</code> you have only
+the <code>Id</code> option:</p>
+<pre class="r"><code>## works
+dbReadTable(con, Id(catalog = &quot;mydatabase&quot;, schema = &quot;myschema&quot;, table = &quot;mytable&quot;))
+
+## won&#39;t work
+dbReadTable(con, ident_q(&quot;mydatabase.myschema.mytable&quot;))
+
+## neither does this
+dbReadTable(con, in_schema(sql(&quot;mydatabase.myschema&quot;), &quot;mytable&quot;))</code></pre>
+<p>Also be careful to have a recent <code>dbplyr</code> version (i.e. &gt;= <code>2.1.1</code>) , where the <code>con</code>
+parameter is passed down to <code>as.sql</code> otherwise commands like
+<code>compute(..., in_schema(...), temporary = TRUE)</code>
+<a href="https://github.com/tidyverse/dbplyr/issues/595">won’t work</a>.</p>
+</div>
+<div id="closing-remarks" class="section level2">
+<h2>Closing Remarks</h2>
+<p>Error messages are not always that straight forward to understand. However, whenever the
+non working SQL is part of the error message, you should carefully look at where the
+escaping puts <code>"</code> (for sQL Server, other backends quote differently). This gives you a
+hint, where things may have gone awry. Of course we can always fall back to pure SQL in
+R (that is without relying on the abstraction layer of <code>dbplyr</code>), but that would be of
+courese only half the fun.</p>
+</div>

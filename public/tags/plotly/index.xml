@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>plotly on thothal.com</title>
-    <link>http://www.thothal.com/tags/plotly/</link>
+    <link>https://www.thothal.com/tags/plotly/</link>
     <description>Recent content in plotly on thothal.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 04 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.thothal.com/tags/plotly/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 04 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.thothal.com/tags/plotly/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>How How to Change the Colors in a Sunburst Graph?</title>
-      <link>http://www.thothal.com/2022/03/04/how-how-to-change-the-colors-in-a-sunburst-graph/</link>
+      <title>How to Change the Colors in a Sunburst Graph?</title>
+      <link>https://www.thothal.com/2022/03/04/how-to-change-the-colors-in-a-sunburst-graph/</link>
       <pubDate>Fri, 04 Mar 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.thothal.com/2022/03/04/how-how-to-change-the-colors-in-a-sunburst-graph/</guid>
+      <guid>https://www.thothal.com/2022/03/04/how-to-change-the-colors-in-a-sunburst-graph/</guid>
       <description>Sunburst GraphsI was recently looking for a neat way to display nested ratios. What do I mean bynested ratio? Well, imagine a taxonomy where you have different hierarchical levelsand you want to show the ratios of all levels simultaneously.
 There are a couple of different ways of how to show these, like mosaic plots, tree plotsor sunburst charts.Despite being a close relative to the most despisedpie chart (of which Tuftehimself said that the only worse design than a pie chart is several of them1) theycan be useful - if you use them with care-2</description>
     </item>

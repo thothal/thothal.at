@@ -3,95 +3,115 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/</loc>
+    <loc>https://www.thothal.com/categories/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.thothal.com/categories/coding/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.thothal.com/tags/database/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.thothal.com/tags/dbplyr/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.thothal.com/2022/03/11/how-to-use-fully-qualified-tablenames-in-dbplyr/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.thothal.com/posts/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.thothal.com/tags/sql/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.thothal.com/tags/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.thothal.com/</loc>
+    <lastmod>2022-03-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/</loc>
     <lastmod>2022-03-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/categories/</loc>
+    <loc>https://www.thothal.com/tags/loops/</loc>
     <lastmod>2022-03-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/categories/coding/</loc>
+    <loc>https://www.thothal.com/tags/tidyverse/</loc>
     <lastmod>2022-03-10T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/tags/loops/</loc>
-    <lastmod>2022-03-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.thothal.com/posts/</loc>
-    <lastmod>2022-03-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.thothal.com/tags/</loc>
-    <lastmod>2022-03-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.thothal.com/</loc>
-    <lastmod>2022-03-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.thothal.com/tags/tidyverse/</loc>
-    <lastmod>2022-03-10T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://www.thothal.com/2022/03/04/how-how-to-change-the-colors-in-a-sunburst-graph/</loc>
+    <loc>https://www.thothal.com/2022/03/04/how-to-change-the-colors-in-a-sunburst-graph/</loc>
     <lastmod>2022-03-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/tags/plotly/</loc>
+    <loc>https://www.thothal.com/tags/plotly/</loc>
     <lastmod>2022-03-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/tags/visualization/</loc>
+    <loc>https://www.thothal.com/tags/visualization/</loc>
     <lastmod>2022-03-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/categories/cooking/</loc>
+    <loc>https://www.thothal.com/categories/cooking/</loc>
     <lastmod>2022-01-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/tags/first-post/</loc>
+    <loc>https://www.thothal.com/tags/first-post/</loc>
     <lastmod>2022-01-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/tags/hello-world/</loc>
+    <loc>https://www.thothal.com/tags/hello-world/</loc>
     <lastmod>2022-01-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/2022/01/14/yet-another-coding-blog/</loc>
+    <loc>https://www.thothal.com/2022/01/14/yet-another-coding-blog/</loc>
     <lastmod>2022-01-14T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/cv/</loc>
+    <loc>https://www.thothal.com/cv/</loc>
     <lastmod>2020-12-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/about/</loc>
+    <loc>https://www.thothal.com/about/</loc>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/authors/</loc>
+    <loc>https://www.thothal.com/authors/</loc>
   </url>
   
   <url>
-    <loc>http://www.thothal.com/series/</loc>
+    <loc>https://www.thothal.com/series/</loc>
   </url>
   
 </urlset>

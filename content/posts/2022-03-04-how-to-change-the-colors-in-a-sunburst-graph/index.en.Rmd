@@ -1,8 +1,8 @@
 ---
-title: How How to Change the Colors in a Sunburst Graph?
+title: How to Change the Colors in a Sunburst Graph?
 author: Thorn Thaler
 date: '2022-03-04'
-slug: how-how-to-change-the-colors-in-a-sunburst-graph
+slug: how-to-change-the-colors-in-a-sunburst-graph
 categories:
   - coding
 tags:
@@ -16,8 +16,10 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r libs, include = FALSE}
+```{r setup, include = FALSE}
 library(glue)
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"), 
+                      fig.align = "center", message = FALSE)
 ```
 
 
@@ -83,6 +85,11 @@ using aggregation at different levels.
 library(plotly)
 library(glue)
 
+## Use transparent background for plots
+## be aware however that you need to explicitely set the line color to white
+## in the sunburst graphs
+bg_trans <- . %>% layout(paper_bgcolor = "#00000000")
+
 lvl4 <- titanic %>% 
    transmute(id = glue("{Class}-{Age}-{Sex}-{Survived}"),
              parent = glue("{Class}-{Age}-{Sex}"),
@@ -135,7 +142,9 @@ sunburst_data <- bind_rows(
              parents = ~ parent,
              values = ~ value,
              type = "sunburst",
-             branchvalues = "total"))
+             marker = list(line = list(color = "#FFF")),
+             branchvalues = "total") %>% 
+      bg_trans())
 ```
 
 Again, it may be personal preferences, but this chart seems to me much easier to 
@@ -167,7 +176,8 @@ overwrite the default color palette via
 library(viridis)
 col_pal <- viridis(4)
 sb %>% 
-   layout(colorway = col_pal)
+   layout(colorway = col_pal) %>% 
+      bg_trans()
 ```
 
 But what if we want to get even fainer control over individual segments say? Well, we
@@ -193,9 +203,10 @@ sunburst_data %>%
              labels = ~ label,
              parents = ~ parent,
              values = ~ value,
-             marker = list(colors = ~ color),
+             marker = list(colors = ~ color, line = list(color = "#FFF")),
              type = "sunburst",
-             branchvalues = "total")
+             branchvalues = "total") %>% 
+      bg_trans()
 
 ```
 
@@ -218,9 +229,10 @@ sunburst_data %>%
              labels = ~ label,
              parents = ~ parent,
              values = ~ value,
-             marker = list(colors = ~ color),
+             marker = list(colors = ~ color, line = list(color = "#FFF")),
              type = "sunburst",
-             branchvalues = "total")
+             branchvalues = "total") %>% 
+      bg_trans()
 
 ```
 

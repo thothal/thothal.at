@@ -11,6 +11,9 @@
    content: "Figure: ";
 }
 
+.plotly {
+    margin: auto;
+}
 
 
 .CV-header:before {

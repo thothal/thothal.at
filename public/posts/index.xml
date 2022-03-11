@@ -2,37 +2,46 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on thothal.com</title>
-    <link>http://www.thothal.com/posts/</link>
+    <link>https://www.thothal.com/posts/</link>
     <description>Recent content in Posts on thothal.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 10 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.thothal.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 11 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.thothal.com/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Use Fully Qualified Tablenames in Dbplyr</title>
+      <link>https://www.thothal.com/2022/03/11/how-to-use-fully-qualified-tablenames-in-dbplyr/</link>
+      <pubDate>Fri, 11 Mar 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.thothal.com/2022/03/11/how-to-use-fully-qualified-tablenames-in-dbplyr/</guid>
+      <description>SQL DatabasesI have only a working knowledge of databases and also more from a theoretical point ofview rather than a deep understanding of the details of the respective implementation.That is, I know what normalization is (and why it is a good thing) and how to do SELECTor JOIN queries, but when it comes to the technical details of the different SQLflavors my knowledge dwindles away.</description>
+    </item>
+    
     <item>
       <title>Aggregate Data with Nested Groups</title>
-      <link>http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/</link>
+      <link>https://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/</link>
       <pubDate>Thu, 10 Mar 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/</guid>
+      <guid>https://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/</guid>
       <description>A Short General Primer on LoopsIn my daily programming I barely use any base for loops. I used to rely on lapplyand friends a lot, then switched to the plyr family of apply functions and eventuallyended up using the purr::map_* family of functions.
 There is a bit of overhead involved in mapand [lvs]apply can be faster / more efficient,but I do like the verbosity of map and friends as well as the possibility to uselambda functions via ~1.</description>
     </item>
     
     <item>
-      <title>How How to Change the Colors in a Sunburst Graph?</title>
-      <link>http://www.thothal.com/2022/03/04/how-how-to-change-the-colors-in-a-sunburst-graph/</link>
+      <title>How to Change the Colors in a Sunburst Graph?</title>
+      <link>https://www.thothal.com/2022/03/04/how-to-change-the-colors-in-a-sunburst-graph/</link>
       <pubDate>Fri, 04 Mar 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.thothal.com/2022/03/04/how-how-to-change-the-colors-in-a-sunburst-graph/</guid>
+      <guid>https://www.thothal.com/2022/03/04/how-to-change-the-colors-in-a-sunburst-graph/</guid>
       <description>Sunburst GraphsI was recently looking for a neat way to display nested ratios. What do I mean bynested ratio? Well, imagine a taxonomy where you have different hierarchical levelsand you want to show the ratios of all levels simultaneously.
 There are a couple of different ways of how to show these, like mosaic plots, tree plotsor sunburst charts.Despite being a close relative to the most despisedpie chart (of which Tuftehimself said that the only worse design than a pie chart is several of them1) theycan be useful - if you use them with care-2</description>
     </item>
     
     <item>
       <title>Yet Another Coding Blog</title>
-      <link>http://www.thothal.com/2022/01/14/yet-another-coding-blog/</link>
+      <link>https://www.thothal.com/2022/01/14/yet-another-coding-blog/</link>
       <pubDate>Fri, 14 Jan 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.thothal.com/2022/01/14/yet-another-coding-blog/</guid>
+      <guid>https://www.thothal.com/2022/01/14/yet-another-coding-blog/</guid>
       <description>Hello WorldDuring my normal work day I spend quite some time reading coding related blog posts andskimming through questions on Stackoverflow (and - if time permits - answering some R or shiny related questions).
 When I learn about a new topic or technique it can happen that I jump from one article toanother (and more often than not get side-tracked by yet another topic 🤦️).In one of those scavenger hunts I ended up reading onBlogdown and a quote was catching my attention:</description>
     </item>
