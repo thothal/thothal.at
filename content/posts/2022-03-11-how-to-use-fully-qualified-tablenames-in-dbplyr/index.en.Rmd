@@ -1,0 +1,156 @@
+---
+title: How to Use Fully Qualified Tablenames in Dbplyr
+author: Thorn Thaler
+date: '2022-03-11'
+slug: how-to-use-fully-qualified-tablenames-in-dbplyr
+categories:
+  - coding
+tags:
+  - dbplyr
+  - database
+  - SQL
+authors: []
+description: ''
+externalLink: ''
+series: []
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(dev.args = list(bg = "transparent"), 
+                      fig.align = "center", message = FALSE)
+```
+
+## SQL Databases
+
+I have only a working knowledge of databases and also more from a theoretical point of 
+view rather than a deep understanding of the details of the respective implementation. 
+That is, I know what normalization is (and why it is a good thing) and how to do `SELECT` 
+or `JOIN` queries, but when it comes to the technical details of the different SQL 
+flavors my knowledge dwindles away.
+
+When I started my new job, I suddenly had to work with a huge ecosystem of databases and
+I had to quickly catch up. We have a plethora of different databases hosted on different
+servers and I learned that there is something like a `schema` and that tables (I rather 
+should say objects, because it is not only tables) can (should?) be addressed by `[InstanceName].DatabaseName.SchemaName.ObjectName`. I also 
+learned that sometimes SQL does not allow to specify the `DatabaseName` of this fully 
+qualified address (try `CREATE db.schema.name` and you will get an error) and a thing or
+two more about databases. 
+
+As we are lots of colleagues working on the (Same) databases I started to use custom
+schemata for my tables, procedures and views. I thought of schemata as something like a
+namespace and depending on the SQL client you are using they are also nicely visually
+grouped. Additionally, at some point our Database Administrators (DBAs) decided that the 
+standard schema is **not** `dbo` anymore, but a personalized one. That is, if I do not 
+specify the schema explicitly my objects are stored in the 
+schema `OURDOMAIN\myusername`. 
+
+I guess the reasoning for this change was to identify more easily who is the owner of an
+object (or at least to make that visible to non DBAs), but of course it is a nightmare to
+type and you have to quote the schema via `db.[OURDOMAIN\myusername].object`.
+
+To make a long story short, I had to deal with schemata and databases from day 1 on. In
+the beginning that was not a big deal, as I was primarily working with an SQL Client 
+(SQL Server Management Studio (SSMS), admittedly a bit more than just a client). However, 
+at some point I found the workflow a bit cumbersome to say the least:
+
+1. Get data from SQL via SSMS.
+1. Store it in a flat file.
+1. Analyze the data in R.
+
+Not only is it a pain in the neck (for me) to manipulate the data in SQL with the same 
+efficiency as I would do in R, but also it is always incredibly difficult to gte data
+out of SQL and into a flat file. Not even mentioning the problems which may arise from
+stale data. Enters `DBI` abd `dbplyr`.
+
+## Using R to Access Data
+
+With [`DBI`](https://dbi.r-dbi.org/) as a general framework and
+[`dbplyr`](https://dbplyr.tidyverse.org/) as a database backend for
+[`dplyr`](https://dplyr.tidyverse.org/) I could marry the two worlds and I did not need
+to leave my beloved RStudio environment for doing the end-to-end analysis.
+
+I had, however, a rather steep learning curve (thanks 
+[StackOverflow](https://stackoverflow.com/) 💖) until I figured how to address tables 
+properly with their fully qualified name and I want to share some insights here:
+
+```{r sql-dbplyr, eval = FALSE}
+library(DBI)
+library(dbplyr)
+library(dplyr)
+
+con <- dbConnect(odbc::odbc(), "my.database.server")
+
+## 1. Use DBI::d 
+tbl(con, Id(catalog = "mydatabase", schema = "myschema", table = "mytable"))
+
+## actually names are ignored
+tbl(con, Id(database = "mydatabase", middle_name = "myschema", object = "mytable"))
+
+## as long as all are named
+tbl(con, Id("mydatabase", "myschema", "mytable"))
+## Error: All arguments to Id() must be named.
+
+## We can check that it is all properly translated to
+## <SQL>
+## SELECT *
+## FROM "mydatabase"."myschema"."mytable"
+
+## 2. Use dbplyr::in_schema - however, need to provide database name 
+## as part of "schema" and need to quote it
+tbl(con, in_schema(sql("mydatabase.myschema"), "mytable"))
+
+## this won't work
+tbl(con, in_schema("mydatabase.myschema", "mytable"))
+
+## the error message also shows why, if you do not escape it is seen as one schema
+## <SQL> 
+## SELECT *
+## FROM "mydatabase.myschema"."mytable"
+
+
+## 3. Use dbplyr::ident_q
+tbl(con, ident_q("mydatabase.myschema.mytable"))
+
+## note the _q version, ident would __not__ do
+tbl(con, ident("mydatabase.myschema.mytable"))
+
+## again compare the generated SQLS
+## ident_q:
+##   <SQL>
+##   SELECT *
+##   FROM mydatabase.myschema.mytable
+## ident:
+##   <SQL>
+##   SELECT *
+##   FROM "mydatabase.myschema.mytable"
+```
+
+To spice things a bit up, if you are using other querying functions like for instance
+`DBI::dbReadTable` you do not have the same options, basically with `DBI` you have only
+the  `Id` option:
+
+```{r sql-dbi, eval = FALSE}
+## works
+dbReadTable(con, Id(catalog = "mydatabase", schema = "myschema", table = "mytable"))
+
+## won't work
+dbReadTable(con, ident_q("mydatabase.myschema.mytable"))
+
+## neither does this
+dbReadTable(con, in_schema(sql("mydatabase.myschema"), "mytable"))
+```
+
+Also be careful to have a recent `dbplyr` version (i.e. >= `2.1.1`) , where the `con` 
+parameter is passed down to `as.sql` otherwise commands like 
+`compute(..., in_schema(...), temporary = TRUE)`
+[won't work](https://github.com/tidyverse/dbplyr/issues/595).
+
+## Closing Remarks
+
+Error messages are not always that straight forward to understand. However, whenever the
+non working SQL is part of the error message, you should carefully look at where the
+escaping puts `"` (for sQL Server, other backends quote differently). This gives you a 
+hint, where things may have gone awry. Of course we can always fall back to pure SQL in
+R (that is without relying on the abstraction layer of `dbplyr`), but that would be of 
+courese only half the fun.

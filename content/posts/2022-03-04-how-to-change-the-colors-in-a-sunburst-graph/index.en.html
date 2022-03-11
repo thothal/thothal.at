@@ -1,0 +1,237 @@
+---
+title: How to Change the Colors in a Sunburst Graph?
+author: Thorn Thaler
+date: '2022-03-04'
+slug: how-to-change-the-colors-in-a-sunburst-graph
+categories:
+  - coding
+tags:
+  - plotly
+  - visualization
+authors: []
+description: ''
+externalLink: ''
+series: []
+editor_options: 
+  chunk_output_type: console
+---
+
+<script src="{{< blogdown/postref >}}index.en_files/header-attrs/header-attrs.js"></script>
+<script src="{{< blogdown/postref >}}index.en_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index.en_files/plotly-binding/plotly.js"></script>
+<script src="{{< blogdown/postref >}}index.en_files/typedarray/typedarray.min.js"></script>
+<script src="{{< blogdown/postref >}}index.en_files/jquery/jquery.min.js"></script>
+<link href="{{< blogdown/postref >}}index.en_files/crosstalk/css/crosstalk.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index.en_files/crosstalk/js/crosstalk.min.js"></script>
+<link href="{{< blogdown/postref >}}index.en_files/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index.en_files/plotly-main/plotly-latest.min.js"></script>
+
+
+<div id="sunburst-graphs" class="section level2">
+<h2>Sunburst Graphs</h2>
+<p>I was recently looking for a neat way to display nested ratios. What do I mean by
+<em>nested ratio</em>? Well, imagine a taxonomy where you have different hierarchical levels
+and you want to show the ratios of all levels simultaneously.</p>
+<p>There are a couple of different ways of how to show these, like mosaic plots, tree plots
+or <a href="https://www.anychart.com/de/chartopedia/chart-type/sunburst-chart/">sunburst charts</a>.
+Despite being a close relative to the most despised
+<a href="https://www.anychart.com/chartopedia/chart-type/pie-chart/">pie chart</a> (of which Tufte
+himself said that the <em>only worse design than a pie chart is several of them</em><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>) they
+<em>can</em> be useful - if you use them with care-<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<p>Anyways, this should bot be blog post about the usefulness of pie charts and their
+relatives but the rtaher technical question of</p>
+<ol style="list-style-type: decimal">
+<li>How to ploit them?</li>
+<li>How to change the color of the wedges?</li>
+</ol>
+<p>So let’s start with some code. I use the <code>Titanic</code> data set here, because it comes
+already with a nice hierarchical structure.</p>
+<pre class="r"><code>library(dplyr)
+library(forcats)
+titanic &lt;- as_tibble(Titanic) %&gt;% 
+   mutate(across(where(is.character), fct_inorder))
+str(titanic)</code></pre>
+<pre><code>## tibble [32 x 5] (S3: tbl_df/tbl/data.frame)
+##  $ Class   : Factor w/ 4 levels &quot;1st&quot;,&quot;2nd&quot;,&quot;3rd&quot;,..: 1 2 3 4 1 2 3 4 1 2 ...
+##  $ Sex     : Factor w/ 2 levels &quot;Male&quot;,&quot;Female&quot;: 1 1 1 1 2 2 2 2 1 1 ...
+##  $ Age     : Factor w/ 2 levels &quot;Child&quot;,&quot;Adult&quot;: 1 1 1 1 1 1 1 1 2 2 ...
+##  $ Survived: Factor w/ 2 levels &quot;No&quot;,&quot;Yes&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ n       : num [1:32] 0 0 35 0 0 0 17 0 118 154 ...</code></pre>
+<p>You can see that we have
+4 x 2 x 2 x 2 rows corresponding to all possible combinations of
+Class, Sex, Age and Survived.</p>
+<p>The classical display (<code>?Titanic</code>) is the mosaic plot:</p>
+<pre class="r"><code>mosaicplot(Titanic)</code></pre>
+<p><img src="{{< blogdown/postref >}}index.en_files/figure-html/mosaic-plot-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Maybe it is me, but I find it difficult to read the graph properly. Furthermore, as the
+chart is static, we get only static information. Thus, if we want to get the underlying
+numebrs we need to provide yet another table.</p>
+</div>
+<div id="plotly" class="section level2">
+<h2>Plotly</h2>
+<p>Enters <code>plotly</code>. With <a href="https://plotly.com/r/">plotly</a> we can make our graphs more
+interactive and most notably we can create a sunburst chart. However, we need some
+data aggregation first as the sunburt chart expects the data in a special format
+(c.f. <a href="https://plotly.com/r/sunburst-charts/">the docs</a>). W.l.o.g. we define the
+hierarchy as <code>Class &gt; Age &gt; Sex &gt; Survived</code>. We have now to construct the hierarchy
+using aggregation at different levels.</p>
+<pre class="r"><code>library(plotly)
+library(glue)
+
+## Use transparent background for plots
+## be aware however that you need to explicitely set the line color to white
+## in the sunburst graphs
+bg_trans &lt;- . %&gt;% layout(paper_bgcolor = &quot;#00000000&quot;)
+
+lvl4 &lt;- titanic %&gt;% 
+   transmute(id = glue(&quot;{Class}-{Age}-{Sex}-{Survived}&quot;),
+             parent = glue(&quot;{Class}-{Age}-{Sex}&quot;),
+             value = n,
+             label = Survived)
+
+lvl3 &lt;- titanic %&gt;% 
+   group_by(Class, Age, Sex) %&gt;% 
+   summarise(value = sum(n), .groups = &quot;drop&quot;) %&gt;% 
+   transmute(id = glue(&quot;{Class}-{Age}-{Sex}&quot;),
+             parent = glue(&quot;{Class}-{Age}&quot;),
+             value,
+             label = Sex)
+
+lvl2 &lt;- titanic %&gt;% 
+   group_by(Class, Age) %&gt;% 
+   summarise(value = sum(n), .groups = &quot;drop&quot;) %&gt;% 
+   transmute(id = glue(&quot;{Class}-{Age}&quot;),
+             parent = glue(&quot;{Class}&quot;),
+             value,
+             label = Age)
+
+lvl1 &lt;- titanic %&gt;% 
+   group_by(Class) %&gt;% 
+   summarise(value = sum(n), .groups = &quot;drop&quot;) %&gt;% 
+   transmute(id = glue(&quot;{Class}&quot;),
+             parent = &quot;Total&quot;,
+             value,
+             label = Class)
+
+lvl0 &lt;- titanic %&gt;% 
+   summarise(value = sum(n)) %&gt;% 
+   transmute(id = &quot;Total&quot;,
+             parent = &quot;&quot;,
+             value,
+             label = &quot;Total&quot;)
+
+sunburst_data &lt;- bind_rows(
+   lvl0,
+   lvl1,
+   lvl2,
+   lvl3,
+   lvl4
+)
+
+(sb &lt;- sunburst_data %&gt;% 
+   plot_ly() %&gt;% 
+   add_trace(ids = ~id,
+             labels = ~ label,
+             parents = ~ parent,
+             values = ~ value,
+             type = &quot;sunburst&quot;,
+             marker = list(line = list(color = &quot;#FFF&quot;)),
+             branchvalues = &quot;total&quot;) %&gt;% 
+      bg_trans())</code></pre>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"visdat":{"74f83aed6bf1":["function () ","plotlyVisDat"]},"cur_data":"74f83aed6bf1","attrs":{"74f83aed6bf1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"ids":{},"labels":{},"parents":{},"values":{},"type":"sunburst","marker":{"line":{"color":"#FFF"}},"branchvalues":"total","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"paper_bgcolor":"#00000000","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"ids":["Total","1st","2nd","3rd","Crew","1st-Child","1st-Adult","2nd-Child","2nd-Adult","3rd-Child","3rd-Adult","Crew-Child","Crew-Adult","1st-Child-Male","1st-Child-Female","1st-Adult-Male","1st-Adult-Female","2nd-Child-Male","2nd-Child-Female","2nd-Adult-Male","2nd-Adult-Female","3rd-Child-Male","3rd-Child-Female","3rd-Adult-Male","3rd-Adult-Female","Crew-Child-Male","Crew-Child-Female","Crew-Adult-Male","Crew-Adult-Female","1st-Child-Male-No","2nd-Child-Male-No","3rd-Child-Male-No","Crew-Child-Male-No","1st-Child-Female-No","2nd-Child-Female-No","3rd-Child-Female-No","Crew-Child-Female-No","1st-Adult-Male-No","2nd-Adult-Male-No","3rd-Adult-Male-No","Crew-Adult-Male-No","1st-Adult-Female-No","2nd-Adult-Female-No","3rd-Adult-Female-No","Crew-Adult-Female-No","1st-Child-Male-Yes","2nd-Child-Male-Yes","3rd-Child-Male-Yes","Crew-Child-Male-Yes","1st-Child-Female-Yes","2nd-Child-Female-Yes","3rd-Child-Female-Yes","Crew-Child-Female-Yes","1st-Adult-Male-Yes","2nd-Adult-Male-Yes","3rd-Adult-Male-Yes","Crew-Adult-Male-Yes","1st-Adult-Female-Yes","2nd-Adult-Female-Yes","3rd-Adult-Female-Yes","Crew-Adult-Female-Yes"],"labels":["Total","1st","2nd","3rd","Crew","Child","Adult","Child","Adult","Child","Adult","Child","Adult","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","No","No","No","No","No","No","No","No","No","No","No","No","No","No","No","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes"],"parents":["","Total","Total","Total","Total","1st","1st","2nd","2nd","3rd","3rd","Crew","Crew","1st-Child","1st-Child","1st-Adult","1st-Adult","2nd-Child","2nd-Child","2nd-Adult","2nd-Adult","3rd-Child","3rd-Child","3rd-Adult","3rd-Adult","Crew-Child","Crew-Child","Crew-Adult","Crew-Adult","1st-Child-Male","2nd-Child-Male","3rd-Child-Male","Crew-Child-Male","1st-Child-Female","2nd-Child-Female","3rd-Child-Female","Crew-Child-Female","1st-Adult-Male","2nd-Adult-Male","3rd-Adult-Male","Crew-Adult-Male","1st-Adult-Female","2nd-Adult-Female","3rd-Adult-Female","Crew-Adult-Female","1st-Child-Male","2nd-Child-Male","3rd-Child-Male","Crew-Child-Male","1st-Child-Female","2nd-Child-Female","3rd-Child-Female","Crew-Child-Female","1st-Adult-Male","2nd-Adult-Male","3rd-Adult-Male","Crew-Adult-Male","1st-Adult-Female","2nd-Adult-Female","3rd-Adult-Female","Crew-Adult-Female"],"values":[2201,325,285,706,885,6,319,24,261,79,627,0,885,5,1,175,144,11,13,168,93,48,31,462,165,0,0,862,23,0,0,35,0,0,0,17,0,118,154,387,670,4,13,89,3,5,11,13,0,1,13,14,0,57,14,75,192,140,80,76,20],"type":"sunburst","marker":{"color":"rgba(31,119,180,1)","line":{"color":"#FFF"}},"branchvalues":"total","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>Again, it may be personal preferences, but this chart seems to me much easier to
+understand:</p>
+<ol style="list-style-type: decimal">
+<li>We see that roughly 40% of all persons on the Titanic were crew members, 25% of the
+passengers came 1st or 2nd class and a third from the 3rd class.</li>
+<li>There were no children in the crew (ok, a no-brainer) and only a few women.</li>
+<li>Females were more likely to survive than men.</li>
+<li>Passengers from the better classes had higher survival rates.</li>
+<li>Only children from the 3rd class died.</li>
+</ol>
+<p>One nice property of the graph is that you can interactively zoom in and zoom out, which
+makes it very easy to read.</p>
+</div>
+<div id="colors" class="section level2">
+<h2>Colors</h2>
+<p>Plotly has a nice default choice of colors, but you may want to change them. While it
+seems to be straightforward for other plotly graphs it was not that clear to me how to
+change the color for the sunburst graph.</p>
+<p>After a lot of googeling and more time on the
+<a href="https://plotly.com/r/reference/">excellent reference guide for plotly</a> one path is to
+overwrite the default color palette via
+<a href="https://plotly.com/r/reference/#layout-colorway">colorway</a>:</p>
+<pre class="r"><code>library(viridis)
+col_pal &lt;- viridis(4)
+sb %&gt;% 
+   layout(colorway = col_pal) %&gt;% 
+      bg_trans()</code></pre>
+<div id="htmlwidget-2" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2">{"x":{"visdat":{"74f83aed6bf1":["function () ","plotlyVisDat"]},"cur_data":"74f83aed6bf1","attrs":{"74f83aed6bf1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"ids":{},"labels":{},"parents":{},"values":{},"type":"sunburst","marker":{"line":{"color":"#FFF"}},"branchvalues":"total","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"paper_bgcolor":"#00000000","colorway":["#440154FF","#31688EFF","#35B779FF","#FDE725FF"],"hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"ids":["Total","1st","2nd","3rd","Crew","1st-Child","1st-Adult","2nd-Child","2nd-Adult","3rd-Child","3rd-Adult","Crew-Child","Crew-Adult","1st-Child-Male","1st-Child-Female","1st-Adult-Male","1st-Adult-Female","2nd-Child-Male","2nd-Child-Female","2nd-Adult-Male","2nd-Adult-Female","3rd-Child-Male","3rd-Child-Female","3rd-Adult-Male","3rd-Adult-Female","Crew-Child-Male","Crew-Child-Female","Crew-Adult-Male","Crew-Adult-Female","1st-Child-Male-No","2nd-Child-Male-No","3rd-Child-Male-No","Crew-Child-Male-No","1st-Child-Female-No","2nd-Child-Female-No","3rd-Child-Female-No","Crew-Child-Female-No","1st-Adult-Male-No","2nd-Adult-Male-No","3rd-Adult-Male-No","Crew-Adult-Male-No","1st-Adult-Female-No","2nd-Adult-Female-No","3rd-Adult-Female-No","Crew-Adult-Female-No","1st-Child-Male-Yes","2nd-Child-Male-Yes","3rd-Child-Male-Yes","Crew-Child-Male-Yes","1st-Child-Female-Yes","2nd-Child-Female-Yes","3rd-Child-Female-Yes","Crew-Child-Female-Yes","1st-Adult-Male-Yes","2nd-Adult-Male-Yes","3rd-Adult-Male-Yes","Crew-Adult-Male-Yes","1st-Adult-Female-Yes","2nd-Adult-Female-Yes","3rd-Adult-Female-Yes","Crew-Adult-Female-Yes"],"labels":["Total","1st","2nd","3rd","Crew","Child","Adult","Child","Adult","Child","Adult","Child","Adult","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","No","No","No","No","No","No","No","No","No","No","No","No","No","No","No","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes"],"parents":["","Total","Total","Total","Total","1st","1st","2nd","2nd","3rd","3rd","Crew","Crew","1st-Child","1st-Child","1st-Adult","1st-Adult","2nd-Child","2nd-Child","2nd-Adult","2nd-Adult","3rd-Child","3rd-Child","3rd-Adult","3rd-Adult","Crew-Child","Crew-Child","Crew-Adult","Crew-Adult","1st-Child-Male","2nd-Child-Male","3rd-Child-Male","Crew-Child-Male","1st-Child-Female","2nd-Child-Female","3rd-Child-Female","Crew-Child-Female","1st-Adult-Male","2nd-Adult-Male","3rd-Adult-Male","Crew-Adult-Male","1st-Adult-Female","2nd-Adult-Female","3rd-Adult-Female","Crew-Adult-Female","1st-Child-Male","2nd-Child-Male","3rd-Child-Male","Crew-Child-Male","1st-Child-Female","2nd-Child-Female","3rd-Child-Female","Crew-Child-Female","1st-Adult-Male","2nd-Adult-Male","3rd-Adult-Male","Crew-Adult-Male","1st-Adult-Female","2nd-Adult-Female","3rd-Adult-Female","Crew-Adult-Female"],"values":[2201,325,285,706,885,6,319,24,261,79,627,0,885,5,1,175,144,11,13,168,93,48,31,462,165,0,0,862,23,0,0,35,0,0,0,17,0,118,154,387,670,4,13,89,3,5,11,13,0,1,13,14,0,57,14,75,192,140,80,76,20],"type":"sunburst","marker":{"color":"rgba(68,1,84,1)","line":{"color":"#FFF"}},"branchvalues":"total","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>But what if we want to get even fainer control over individual segments say? Well, we
+can specify a color for each segment individually, like this:</p>
+<pre class="r"><code>sunburst_data &lt;- sunburst_data %&gt;% 
+   mutate(color = case_when(label == &quot;Yes&quot; ~ col_pal[1],
+                            label == &quot;No&quot; ~ col_pal[3],
+                            label == &quot;Child&quot; ~ &quot;#C994C7&quot;,
+                            label == &quot;Adult&quot; ~ &quot;#DD1C77&quot;,
+                            label == &quot;Male&quot; ~ &quot;#377EB8&quot;,
+                            label == &quot;Female&quot; ~ &quot;#E41A1C&quot;,
+                            label == &quot;Crew&quot; ~ &quot;#FFFFCC&quot;,
+                            label == &quot;1st&quot; ~ &quot;#78C679&quot;,
+                            label == &quot;2nd&quot; ~ &quot;#C2E699&quot;,
+                            label == &quot;3rd&quot; ~ &quot;#238443&quot;,
+                            TRUE ~ &quot;#DFDFDF&quot;))
+
+sunburst_data %&gt;% 
+   plot_ly() %&gt;% 
+   add_trace(ids = ~id,
+             labels = ~ label,
+             parents = ~ parent,
+             values = ~ value,
+             marker = list(colors = ~ color, line = list(color = &quot;#FFF&quot;)),
+             type = &quot;sunburst&quot;,
+             branchvalues = &quot;total&quot;) %&gt;% 
+      bg_trans()</code></pre>
+<div id="htmlwidget-3" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3">{"x":{"visdat":{"74f8733c4e2a":["function () ","plotlyVisDat"]},"cur_data":"74f8733c4e2a","attrs":{"74f8733c4e2a":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"ids":{},"labels":{},"parents":{},"values":{},"marker":{"colors":{},"line":{"color":"#FFF"}},"type":"sunburst","branchvalues":"total","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"paper_bgcolor":"#00000000","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"ids":["Total","1st","2nd","3rd","Crew","1st-Child","1st-Adult","2nd-Child","2nd-Adult","3rd-Child","3rd-Adult","Crew-Child","Crew-Adult","1st-Child-Male","1st-Child-Female","1st-Adult-Male","1st-Adult-Female","2nd-Child-Male","2nd-Child-Female","2nd-Adult-Male","2nd-Adult-Female","3rd-Child-Male","3rd-Child-Female","3rd-Adult-Male","3rd-Adult-Female","Crew-Child-Male","Crew-Child-Female","Crew-Adult-Male","Crew-Adult-Female","1st-Child-Male-No","2nd-Child-Male-No","3rd-Child-Male-No","Crew-Child-Male-No","1st-Child-Female-No","2nd-Child-Female-No","3rd-Child-Female-No","Crew-Child-Female-No","1st-Adult-Male-No","2nd-Adult-Male-No","3rd-Adult-Male-No","Crew-Adult-Male-No","1st-Adult-Female-No","2nd-Adult-Female-No","3rd-Adult-Female-No","Crew-Adult-Female-No","1st-Child-Male-Yes","2nd-Child-Male-Yes","3rd-Child-Male-Yes","Crew-Child-Male-Yes","1st-Child-Female-Yes","2nd-Child-Female-Yes","3rd-Child-Female-Yes","Crew-Child-Female-Yes","1st-Adult-Male-Yes","2nd-Adult-Male-Yes","3rd-Adult-Male-Yes","Crew-Adult-Male-Yes","1st-Adult-Female-Yes","2nd-Adult-Female-Yes","3rd-Adult-Female-Yes","Crew-Adult-Female-Yes"],"labels":["Total","1st","2nd","3rd","Crew","Child","Adult","Child","Adult","Child","Adult","Child","Adult","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","No","No","No","No","No","No","No","No","No","No","No","No","No","No","No","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes"],"parents":["","Total","Total","Total","Total","1st","1st","2nd","2nd","3rd","3rd","Crew","Crew","1st-Child","1st-Child","1st-Adult","1st-Adult","2nd-Child","2nd-Child","2nd-Adult","2nd-Adult","3rd-Child","3rd-Child","3rd-Adult","3rd-Adult","Crew-Child","Crew-Child","Crew-Adult","Crew-Adult","1st-Child-Male","2nd-Child-Male","3rd-Child-Male","Crew-Child-Male","1st-Child-Female","2nd-Child-Female","3rd-Child-Female","Crew-Child-Female","1st-Adult-Male","2nd-Adult-Male","3rd-Adult-Male","Crew-Adult-Male","1st-Adult-Female","2nd-Adult-Female","3rd-Adult-Female","Crew-Adult-Female","1st-Child-Male","2nd-Child-Male","3rd-Child-Male","Crew-Child-Male","1st-Child-Female","2nd-Child-Female","3rd-Child-Female","Crew-Child-Female","1st-Adult-Male","2nd-Adult-Male","3rd-Adult-Male","Crew-Adult-Male","1st-Adult-Female","2nd-Adult-Female","3rd-Adult-Female","Crew-Adult-Female"],"values":[2201,325,285,706,885,6,319,24,261,79,627,0,885,5,1,175,144,11,13,168,93,48,31,462,165,0,0,862,23,0,0,35,0,0,0,17,0,118,154,387,670,4,13,89,3,5,11,13,0,1,13,14,0,57,14,75,192,140,80,76,20],"marker":{"color":"rgba(31,119,180,1)","colors":["#DFDFDF","#78C679","#C2E699","#238443","#FFFFCC","#C994C7","#DD1C77","#C994C7","#DD1C77","#C994C7","#DD1C77","#C994C7","#DD1C77","#377EB8","#E41A1C","#377EB8","#E41A1C","#377EB8","#E41A1C","#377EB8","#E41A1C","#377EB8","#E41A1C","#377EB8","#E41A1C","#377EB8","#E41A1C","#377EB8","#E41A1C","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#35B779FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF"],"line":{"color":"#FFF"}},"type":"sunburst","branchvalues":"total","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>In this setting, the same categories get the same color. Admittedly, nobody with a
+clear mind would use such a colorful graph (not even those of us who grew up in the 80’s
+like myself 😉), but you get my point.</p>
+<p>Maybe a more realistic use case would be to highlight certain parts of the graph to guide
+the reader’s attention. For instance we could try to highlight the children on board of
+the titanic.</p>
+<pre class="r"><code>sunburst_data &lt;- sunburst_data %&gt;% 
+   mutate(color = case_when(grepl(&quot;Child&quot;, id) ~ col_pal[1],
+                            TRUE ~ &quot;#DFDFDF&quot;))
+
+sunburst_data %&gt;% 
+   plot_ly() %&gt;% 
+   add_trace(ids = ~id,
+             labels = ~ label,
+             parents = ~ parent,
+             values = ~ value,
+             marker = list(colors = ~ color, line = list(color = &quot;#FFF&quot;)),
+             type = &quot;sunburst&quot;,
+             branchvalues = &quot;total&quot;) %&gt;% 
+      bg_trans()</code></pre>
+<div id="htmlwidget-4" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4">{"x":{"visdat":{"74f85e6f69c0":["function () ","plotlyVisDat"]},"cur_data":"74f85e6f69c0","attrs":{"74f85e6f69c0":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"ids":{},"labels":{},"parents":{},"values":{},"marker":{"colors":{},"line":{"color":"#FFF"}},"type":"sunburst","branchvalues":"total","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"paper_bgcolor":"#00000000","hovermode":"closest","showlegend":false},"source":"A","config":{"showSendToCloud":false},"data":[{"ids":["Total","1st","2nd","3rd","Crew","1st-Child","1st-Adult","2nd-Child","2nd-Adult","3rd-Child","3rd-Adult","Crew-Child","Crew-Adult","1st-Child-Male","1st-Child-Female","1st-Adult-Male","1st-Adult-Female","2nd-Child-Male","2nd-Child-Female","2nd-Adult-Male","2nd-Adult-Female","3rd-Child-Male","3rd-Child-Female","3rd-Adult-Male","3rd-Adult-Female","Crew-Child-Male","Crew-Child-Female","Crew-Adult-Male","Crew-Adult-Female","1st-Child-Male-No","2nd-Child-Male-No","3rd-Child-Male-No","Crew-Child-Male-No","1st-Child-Female-No","2nd-Child-Female-No","3rd-Child-Female-No","Crew-Child-Female-No","1st-Adult-Male-No","2nd-Adult-Male-No","3rd-Adult-Male-No","Crew-Adult-Male-No","1st-Adult-Female-No","2nd-Adult-Female-No","3rd-Adult-Female-No","Crew-Adult-Female-No","1st-Child-Male-Yes","2nd-Child-Male-Yes","3rd-Child-Male-Yes","Crew-Child-Male-Yes","1st-Child-Female-Yes","2nd-Child-Female-Yes","3rd-Child-Female-Yes","Crew-Child-Female-Yes","1st-Adult-Male-Yes","2nd-Adult-Male-Yes","3rd-Adult-Male-Yes","Crew-Adult-Male-Yes","1st-Adult-Female-Yes","2nd-Adult-Female-Yes","3rd-Adult-Female-Yes","Crew-Adult-Female-Yes"],"labels":["Total","1st","2nd","3rd","Crew","Child","Adult","Child","Adult","Child","Adult","Child","Adult","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","Male","Female","No","No","No","No","No","No","No","No","No","No","No","No","No","No","No","No","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes","Yes"],"parents":["","Total","Total","Total","Total","1st","1st","2nd","2nd","3rd","3rd","Crew","Crew","1st-Child","1st-Child","1st-Adult","1st-Adult","2nd-Child","2nd-Child","2nd-Adult","2nd-Adult","3rd-Child","3rd-Child","3rd-Adult","3rd-Adult","Crew-Child","Crew-Child","Crew-Adult","Crew-Adult","1st-Child-Male","2nd-Child-Male","3rd-Child-Male","Crew-Child-Male","1st-Child-Female","2nd-Child-Female","3rd-Child-Female","Crew-Child-Female","1st-Adult-Male","2nd-Adult-Male","3rd-Adult-Male","Crew-Adult-Male","1st-Adult-Female","2nd-Adult-Female","3rd-Adult-Female","Crew-Adult-Female","1st-Child-Male","2nd-Child-Male","3rd-Child-Male","Crew-Child-Male","1st-Child-Female","2nd-Child-Female","3rd-Child-Female","Crew-Child-Female","1st-Adult-Male","2nd-Adult-Male","3rd-Adult-Male","Crew-Adult-Male","1st-Adult-Female","2nd-Adult-Female","3rd-Adult-Female","Crew-Adult-Female"],"values":[2201,325,285,706,885,6,319,24,261,79,627,0,885,5,1,175,144,11,13,168,93,48,31,462,165,0,0,862,23,0,0,35,0,0,0,17,0,118,154,387,670,4,13,89,3,5,11,13,0,1,13,14,0,57,14,75,192,140,80,76,20],"marker":{"color":"rgba(31,119,180,1)","colors":["#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#440154FF","#DFDFDF","#440154FF","#DFDFDF","#440154FF","#DFDFDF","#440154FF","#DFDFDF","#440154FF","#440154FF","#DFDFDF","#DFDFDF","#440154FF","#440154FF","#DFDFDF","#DFDFDF","#440154FF","#440154FF","#DFDFDF","#DFDFDF","#440154FF","#440154FF","#DFDFDF","#DFDFDF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#440154FF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF","#DFDFDF"],"line":{"color":"#FFF"}},"type":"sunburst","branchvalues":"total","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p><em>P.S.</em> One final remark: most probably you have observed that the sunburst graph uses some sort
+of color intensity mapping, which results in reduced tints in the outer rings. I have
+not yet found the setting which controls this behavior. If you know how to change this
+setting, I will appreciate a quick comment.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><em><a href="http://84.89.132.1/~michael/visualdata/tufte-aesthetics_and_technique.pdf">The
+Visual Display of Quantitative Information, Edward Tufte, Graphics Press,
+2001</a></em><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>The same holds true for pie chart, if you use
+them with 2 categories they <em>can</em> be informative, just because we are used to watches.
+However, I side with Tufte here that a table or the bare number may be more informative in
+these cases.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>

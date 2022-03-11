@@ -1,4 +1,4 @@
-baseURL = "http://www.thothal.com"
+baseURL = "https://www.thothal.com"
 title = "thothal.com"
 
 theme = "hugo-coder"

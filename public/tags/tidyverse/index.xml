@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>tidyverse on thothal.com</title>
-    <link>http://www.thothal.com/tags/tidyverse/</link>
+    <link>https://www.thothal.com/tags/tidyverse/</link>
     <description>Recent content in tidyverse on thothal.com</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 10 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://www.thothal.com/tags/tidyverse/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 10 Mar 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://www.thothal.com/tags/tidyverse/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Aggregate Data with Nested Groups</title>
-      <link>http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/</link>
+      <link>https://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/</link>
       <pubDate>Thu, 10 Mar 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/</guid>
+      <guid>https://www.thothal.com/2022/03/10/aggregate-data-with-nested-groups/</guid>
       <description>A Short General Primer on LoopsIn my daily programming I barely use any base for loops. I used to rely on lapplyand friends a lot, then switched to the plyr family of apply functions and eventuallyended up using the purr::map_* family of functions.
 There is a bit of overhead involved in mapand [lvs]apply can be faster / more efficient,but I do like the verbosity of map and friends as well as the possibility to uselambda functions via ~1.</description>
     </item>
