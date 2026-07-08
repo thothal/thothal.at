@@ -1,0 +1,157 @@
+{{- $profileFile := hugo.Data.cv.profile -}}
+{{- $hasCvData := and $profileFile (index $profileFile "profile") -}}
+
+<section class="container page cv-layout {{ .Params.customClass }}">
+   <article>
+      <header>
+         <h1>{{ .Title }}</h1>
+      </header>
+
+      {{- if $hasCvData -}}
+      {{- partial "cv/profile.html" . -}}
+      {{- partial "cv/quote.html" . -}}
+
+      {{- with hugo.Data.cv.experience.experience -}}
+      {{- partial "cv/timeline.html" (dict "page" $ "block" .) -}}
+      {{- end -}}
+
+      {{- with hugo.Data.cv.education.education -}}
+      {{- partial "cv/timeline.html" (dict "page" $ "block" .) -}}
+      {{- end -}}
+
+      {{- $lang := .Site.Language.Lang | default "en" -}}
+
+      {{- $techTitle := "Technical Stack" -}}
+      {{- $techLbl0 := "Programming" -}}
+      {{- $techLbl1 := "AI & Platforms" -}}
+      {{- $techLbl2 := "Statistics" -}}
+      {{- $techLbl3 := "Libraries" -}}
+
+      {{- $profileTitle := "Professional Profile" -}}
+      {{- $profileLbl1 := "Soft Skills" -}}
+      {{- $profileLbl2 := "Languages" -}}
+
+      {{- $recognitionTitle := "Recognition & Development" -}}
+      {{- $recognitionLbl1 := "Awards" -}}
+      {{- $recognitionLbl2 := "Trainings" -}}
+      {{- $recognitionLbl3 := "Interests" -}}
+
+      {{- if eq $lang "de" -}}
+      {{- $techTitle = "Technologie-Stack" -}}
+      {{- $techLbl0 = "Programmierung" -}}
+      {{- $techLbl1 = "AI & Plattformen" -}}
+      {{- $techLbl2 = "Statistik" -}}
+      {{- $techLbl3 = "Libraries" -}}
+      {{- $profileTitle = "Berufliches Profil" -}}
+      {{- $profileLbl1 = "Soft Skills" -}}
+      {{- $profileLbl2 = "Sprachen" -}}
+      {{- $recognitionTitle = "Auszeichnungen & Entwicklung" -}}
+      {{- $recognitionLbl1 = "Auszeichnungen" -}}
+      {{- $recognitionLbl2 = "Weiterbildungen" -}}
+      {{- $recognitionLbl3 = "Interessen" -}}
+      {{- end -}}
+
+      {{- $programmingValues := slice -}}
+      {{- with hugo.Data.cv.competencies.programming.items -}}
+      {{- range . -}}
+      {{- $filled := div (add (.level | default 0) 1) 2 -}}
+      {{- $programmingValues = $programmingValues | append (dict "text" .skill "filled" $filled) -}}
+      {{- end -}}
+      {{- end -}}
+
+      {{- $platformValues := slice -}}
+      {{- with hugo.Data.cv.competencies.platforms.items -}}
+      {{- range . -}}
+      {{- $v := partial "cv/loc-value.html" (dict "value" .label "lang" $lang) -}}
+      {{- $platformValues = $platformValues | append (htmlUnescape $v) -}}
+      {{- end -}}
+      {{- end -}}
+
+      {{- $statsValues := slice -}}
+      {{- with hugo.Data.cv.competencies.statistics.items -}}
+      {{- range . -}}
+      {{- $v := partial "cv/loc-value.html" (dict "value" .label "lang" $lang) -}}
+      {{- $statsValues = $statsValues | append (htmlUnescape $v) -}}
+      {{- end -}}
+      {{- end -}}
+
+      {{- $libraryValues := slice -}}
+      {{- with hugo.Data.cv.competencies.libraries.items -}}
+      {{- range . -}}
+      {{- $v := partial "cv/loc-value.html" (dict "value" .label "lang" $lang) -}}
+      {{- $libraryValues = $libraryValues | append (htmlUnescape $v) -}}
+      {{- end -}}
+      {{- end -}}
+
+      {{- partial "cv/merged-lines.html" (dict
+      "page" .
+      "title" $techTitle
+      "lines" (slice
+      (dict "label" $techLbl0 "values" $programmingValues "sep" " · " "type" "tooltips")
+      (dict "label" $techLbl1 "values" $platformValues "sep" " · ")
+      (dict "label" $techLbl2 "values" $statsValues "sep" " · ")
+      (dict "label" $techLbl3 "values" $libraryValues "sep" " · ")
+      )) -}}
+
+      {{- $softValues := slice -}}
+      {{- with hugo.Data.cv.competencies.soft_skills.items -}}
+      {{- range . -}}
+      {{- $v := partial "cv/loc-value.html" (dict "value" .label "lang" $lang) -}}
+      {{- $softValues = $softValues | append (htmlUnescape $v) -}}
+      {{- end -}}
+      {{- end -}}
+
+      {{- $languageValues := slice -}}
+      {{- with hugo.Data.cv.competencies.languages.items -}}
+      {{- range . -}}
+      {{- $lvl := partial "cv/loc-value.html" (dict "value" .level "lang" $lang) -}}
+      {{- $languageValues = $languageValues | append (printf "%s (%s)" .flag $lvl) -}}
+      {{- end -}}
+      {{- end -}}
+
+      {{- partial "cv/merged-lines.html" (dict
+      "page" .
+      "title" $profileTitle
+      "lines" (slice
+      (dict "label" $profileLbl1 "values" $softValues "sep" " · ")
+      (dict "label" $profileLbl2 "values" $languageValues "sep" " · ")
+      )) -}}
+
+      {{- $awardValues := slice -}}
+      {{- with hugo.Data.cv.achievements.awards.items -}}
+      {{- range . -}}
+      {{- $v := partial "cv/loc-value.html" (dict "value" .title "lang" $lang) -}}
+      {{- $awardValues = $awardValues | append (htmlUnescape $v) -}}
+      {{- end -}}
+      {{- end -}}
+
+      {{- $trainingValues := slice -}}
+      {{- with hugo.Data.cv.achievements.trainings.items -}}
+      {{- range . -}}
+      {{- $v := partial "cv/loc-value.html" (dict "value" .title "lang" $lang) -}}
+      {{- $trainingValues = $trainingValues | append (htmlUnescape $v) -}}
+      {{- end -}}
+      {{- end -}}
+
+      {{- $interestIcons := slice -}}
+      {{- with hugo.Data.cv.achievements.interests.items -}}
+      {{- range . -}}
+      {{- with .icon -}}
+      {{- $interestIcons = $interestIcons | append . -}}
+      {{- end -}}
+      {{- end -}}
+      {{- end -}}
+
+      {{- partial "cv/merged-lines.html" (dict
+      "page" .
+      "title" $recognitionTitle
+      "lines" (slice
+      (dict "label" $recognitionLbl1 "values" $awardValues "sep" " · ")
+      (dict "label" $recognitionLbl2 "values" $trainingValues "sep" " · ")
+      (dict "label" $recognitionLbl3 "icons" $interestIcons "type" "icons")
+      )) -}}
+      {{- else -}}
+      {{ .Content }}
+      {{- end -}}
+   </article>
+</section>

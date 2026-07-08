@@ -1,0 +1,39 @@
+{{- $title := .title -}}
+{{- $lines := .lines -}}
+
+<section class="cv-block cv-classic-block cv-merged-block">
+   <h2 class="CV-header">{{ $title }}</h2>
+   <dl class="cv-dl">
+      {{- range $line := $lines -}}
+      <dt>
+         {{- with (index $line "label") -}}<h6 class="cv-term-heading">{{ . }}</h6>{{- end -}}
+      </dt>
+      <dd>
+         {{- if eq (index $line "type") "icons" -}}
+         <span class="cv-merged-icons">
+            {{- $firstIcon := true -}}
+            {{- range (index $line "icons") -}}
+            {{- if not $firstIcon }} · {{ end -}}
+            {{- $iconClass := partial "cv/icon-class.html" . -}}
+            <i class="{{ $iconClass }}" aria-hidden="true"></i>
+            {{- $firstIcon = false -}}
+            {{- end -}}
+         </span>
+         {{- else if eq (index $line "type") "tooltips" -}}
+         {{- $sep := (index $line "sep") | default ", " -}}
+         {{- $first := true -}}
+         {{- range (index $line "values") -}}
+         {{- if not $first }}{{ $sep }}{{ end -}}
+         {{- $filled := .filled -}}
+         <span class="cv-has-tooltip"
+            data-stars="{{- range seq 5 -}}{{- if le . $filled -}}★{{- else -}}☆{{- end -}}{{- end -}}">{{ .text
+            }}</span>
+         {{- $first = false -}}
+         {{- end -}}
+         {{- else -}}
+         {{- delimit (index $line "values") ((index $line "sep") | default ", ") -}}
+         {{- end -}}
+      </dd>
+      {{- end -}}
+   </dl>
+</section>

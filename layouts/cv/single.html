@@ -1,0 +1,8 @@
+{{ define "title" }}
+{{ .Title }} · {{ .Site.Title }}
+{{ end }}
+
+{{ define "content" }}
+{{ partial "cv/page.html" . }}
+{{ partial "posts/math.html" . }}
+{{ end }}

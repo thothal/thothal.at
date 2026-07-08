@@ -5,3 +5,6 @@
 .httr-oauth
 .DS_Store
 Thumbs.db
+data/cv/
+.hugo_build.lock
+.tmp/

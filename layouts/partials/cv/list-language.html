@@ -1,0 +1,17 @@
+{{- $page := .page -}}
+{{- $block := .block -}}
+{{- $lang := $page.Site.Language.Lang | default "en" -}}
+{{- $title := partial "cv/loc-value.html" (dict "value" $block.title "lang" $lang) -}}
+
+<section class="cv-block cv-classic-block">
+   <h2 class="CV-header">{{ $title }}</h2>
+   <dl class="cv-dl">
+      {{- range $block.items -}}
+      {{- $level := partial "cv/loc-value.html" (dict "value" .level "lang" $lang) -}}
+      <dt>
+         <h6 class="cv-term-heading">{{ .flag }}</h6>
+      </dt>
+      <dd>{{ $level }}</dd>
+      {{- end -}}
+   </dl>
+</section>

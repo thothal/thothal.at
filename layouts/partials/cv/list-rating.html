@@ -1,0 +1,28 @@
+{{- $page := .page -}}
+{{- $block := .block -}}
+{{- $lang := $page.Site.Language.Lang | default "en" -}}
+{{- $title := partial "cv/loc-value.html" (dict "value" $block.title "lang" $lang) -}}
+
+<section class="cv-block cv-classic-block">
+   <h2 class="CV-header">{{ $title }}</h2>
+   <dl class="cv-dl">
+      {{- range $block.items -}}
+      {{- $level := .level | default 0 -}}
+      {{- $filled := div (add $level 1) 2 -}}
+      <dt>
+         <h6 class="cv-term-heading">{{ .skill }}</h6>
+      </dt>
+      <dd>
+         <span class="cv-stars" aria-label="{{ .skill }} rating {{ $filled }} out of 5">
+            {{- range seq 5 -}}
+            {{- if le . $filled -}}
+            <span class="cv-star cv-star-on">&#9733;</span>
+            {{- else -}}
+            <span class="cv-star cv-star-off">&#9734;</span>
+            {{- end -}}
+            {{- end -}}
+         </span>
+      </dd>
+      {{- end -}}
+   </dl>
+</section>

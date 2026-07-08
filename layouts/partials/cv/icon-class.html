@@ -1,0 +1,19 @@
+{{- $icon := . -}}
+{{- $map := dict
+"map-marker-alt" "map-marker"
+"mobile-alt" "mobile"
+"chalkboard-teacher" "graduation-cap"
+"box-open" "archive"
+"r-project" "code"
+"js" "code"
+-}}
+{{- $resolved := $icon | default "circle" -}}
+{{- if and $icon (isset $map $icon) -}}
+{{- $resolved = index $map $icon -}}
+{{- end -}}
+{{- $brands := dict "github" true "linkedin" true "stack-overflow" true "twitter" true -}}
+{{- if isset $brands $resolved -}}
+{{- printf "fa-brands fa-%s" $resolved -}}
+{{- else -}}
+{{- printf "fa-solid fa-%s" $resolved -}}
+{{- end -}}

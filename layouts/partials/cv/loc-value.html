@@ -1,0 +1,47 @@
+{{- $value := .value -}}
+{{- $lang := .lang | default "en" -}}
+
+{{- if reflect.IsMap $value -}}
+{{- $selected := "" -}}
+{{- $found := false -}}
+
+{{- if and (not $found) (isset $value $lang) -}}
+{{- $candidate := index $value $lang -}}
+{{- if $candidate -}}
+{{- $selected = printf "%v" $candidate -}}
+{{- $found = true -}}
+{{- end -}}
+{{- end -}}
+
+{{- if and (not $found) (isset $value "en") -}}
+{{- $candidate := index $value "en" -}}
+{{- if $candidate -}}
+{{- $selected = printf "%v" $candidate -}}
+{{- $found = true -}}
+{{- end -}}
+{{- end -}}
+
+{{- if and (not $found) (isset $value "de") -}}
+{{- $candidate := index $value "de" -}}
+{{- if $candidate -}}
+{{- $selected = printf "%v" $candidate -}}
+{{- $found = true -}}
+{{- end -}}
+{{- end -}}
+
+{{- if not $found -}}
+{{- range $key, $entry := $value -}}
+{{- if and (not $found) $entry -}}
+{{- $selected = printf "%v" $entry -}}
+{{- $found = true -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- $selected -}}
+{{- /* keep helper output string-only for Hugo template compatibility */ -}}
+{{- else -}}
+{{- if $value -}}
+{{- printf "%v" $value -}}
+{{- end -}}
+{{- end -}}

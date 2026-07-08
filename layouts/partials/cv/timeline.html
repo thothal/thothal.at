@@ -1,0 +1,67 @@
+{{- $page := .page -}}
+{{- $block := .block -}}
+{{- $lang := $page.Site.Language.Lang | default "en" -}}
+{{- $title := partial "cv/loc-value.html" (dict "value" $block.title "lang" $lang) -}}
+
+<section class="cv-block cv-classic-block cv-timeline-block">
+   <h2 class="CV-header">{{ $title }}</h2>
+   <dl class="cv-dl">
+      {{- range $block.items -}}
+      {{- $periodStart := "" -}}
+      {{- with .period.start -}}{{- $periodStart = printf "%v" . -}}{{- end -}}
+      {{- $periodEnd := "" -}}
+      {{- with .period.end -}}{{- $periodEnd = printf "%v" . -}}{{- end -}}
+
+      <dt>
+         <h6 class="cv-term-heading">{{ $periodStart }} - {{ $periodEnd }}</h6>
+      </dt>
+      <dd>
+         {{- $entryTitle := "" -}}
+         {{- with .title -}}
+         {{- $entryTitle = partial "cv/loc-value.html" (dict "value" . "lang" $lang) -}}
+         {{- end -}}
+         {{- with .degree -}}
+         {{- $entryTitle = partial "cv/loc-value.html" (dict "value" . "lang" $lang) -}}
+         {{- end -}}
+
+         {{- $entryOrg := "" -}}
+         {{- with .organization -}}{{- $entryOrg = . -}}{{- end -}}
+         {{- with .institution -}}{{- $entryOrg = . -}}{{- end -}}
+
+         <h6 class="cv-entry-heading">
+            {{- if $entryTitle -}}<strong>{{ $entryTitle }}</strong>{{- end -}}
+            {{ if and $entryTitle $entryOrg }} ({{ $entryOrg }}){{ end }}
+            {{- if and (not $entryTitle) $entryOrg -}}<strong>{{ $entryOrg }}</strong>{{- end -}}
+         </h6>
+
+         {{- $pointsBlock := .highlights -}}
+         {{- if not $pointsBlock -}}
+         {{- $pointsBlock = .details -}}
+         {{- end -}}
+         {{- $points := slice -}}
+
+         {{- if reflect.IsMap $pointsBlock -}}
+         {{- if isset $pointsBlock $lang -}}
+         {{- $points = index $pointsBlock $lang -}}
+         {{- else if isset $pointsBlock "en" -}}
+         {{- $points = index $pointsBlock "en" -}}
+         {{- else if isset $pointsBlock "de" -}}
+         {{- $points = index $pointsBlock "de" -}}
+         {{- else -}}
+         {{- range $key, $value := $pointsBlock -}}
+         {{- if and (eq (len $points) 0) (reflect.IsSlice $value) -}}
+         {{- $points = $value -}}
+         {{- end -}}
+         {{- end -}}
+         {{- end -}}
+         {{- else if reflect.IsSlice $pointsBlock -}}
+         {{- $points = $pointsBlock -}}
+         {{- end -}}
+
+         {{- if gt (len $points) 0 -}}
+         <p class="cv-item-summary">{{ delimit $points "; " }}</p>
+         {{- end -}}
+      </dd>
+      {{- end -}}
+   </dl>
+</section>

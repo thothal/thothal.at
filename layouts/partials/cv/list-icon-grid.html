@@ -1,0 +1,21 @@
+{{- $page := .page -}}
+{{- $block := .block -}}
+{{- $lang := $page.Site.Language.Lang | default "en" -}}
+{{- $title := partial "cv/loc-value.html" (dict "value" $block.title "lang" $lang) -}}
+
+<section class="cv-block cv-classic-block">
+   <h2 class="CV-header">{{ $title }}</h2>
+   <p class="cv-inline-values cv-interest-icons">
+      {{- $first := true -}}
+      {{- range $block.items -}}
+      {{- if not $first }} · {{ end -}}
+      {{- with .icon -}}
+      {{- $iconClass := partial "cv/icon-class.html" . -}}
+      <i class="{{ $iconClass }}" aria-hidden="true"></i>
+      {{- end -}}
+      {{- $text := partial "cv/loc-value.html" (dict "value" .title "lang" $lang) -}}
+      {{- with $text -}} {{ . }}{{- end -}}
+      {{- $first = false -}}
+      {{- end -}}
+   </p>
+</section>

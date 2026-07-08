@@ -1,0 +1,13 @@
+{{- $lang := .Site.Language.Lang | default "en" -}}
+{{- with hugo.Data.cv.profile.profile -}}
+{{- $data := .data -}}
+{{- $name := $data.name -}}
+{{- $headline := partial "cv/loc-value.html" (dict "value" $data.headline "lang" $lang) -}}
+
+<section class="cv-intro">
+   <h2 class="cv-name">{{ $name.first }} {{ $name.last }}</h2>
+   {{- with $headline }}
+   <h3 class="cv-headline">{{ . }}</h3>
+   {{- end -}}
+</section>
+{{- end -}}

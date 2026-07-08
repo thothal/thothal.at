@@ -1,0 +1,11 @@
+{{- $lang := .Site.Language.Lang | default "en" -}}
+{{- with hugo.Data.cv.profile.summary_quote -}}
+{{- $text := partial "cv/loc-value.html" (dict "value" .text "lang" $lang) -}}
+{{- with $text -}}
+<hr>
+<blockquote>
+   <p>{{ . | markdownify }}</p>
+</blockquote>
+<hr>
+{{- end -}}
+{{- end -}}

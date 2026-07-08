@@ -1,0 +1,31 @@
+{{- $lang := .Site.Language.Lang | default "en" -}}
+{{- with hugo.Data.cv.profile.contact -}}
+{{- $title := partial "cv/loc-value.html" (dict "value" .title "lang" $lang) -}}
+{{- $allowedTypes := dict "website" true "linkedin" true "stackoverflow" true "github" true -}}
+{{- $typeIcons := dict "website" "mouse-pointer" "linkedin" "linkedin" "stackoverflow" "stack-overflow" "github"
+"github" -}}
+
+<section class="cv-block cv-classic-block">
+   <h2 class="CV-header">{{ $title }}</h2>
+   <dl class="cv-dl">
+      {{- range .items -}}
+      {{- if isset $allowedTypes .type -}}
+      <dt>
+         {{- $iconName := index $typeIcons .type -}}
+         {{- with $iconName -}}
+         {{- $iconClass := partial "cv/icon-class.html" . -}}
+         <i class="{{ $iconClass }}" aria-label="{{ . }}"></i>
+         {{- end -}}
+      </dt>
+      <dd>
+         {{- if and .url .label -}}
+         <a href="{{ .url }}">{{ .label }}</a>
+         {{- else if .value -}}
+         {{ .value }}
+         {{- end -}}
+      </dd>
+      {{- end -}}
+      {{- end -}}
+   </dl>
+</section>
+{{- end -}}
