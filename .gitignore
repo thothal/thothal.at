@@ -10,7 +10,7 @@ data/cv/
 .tmp/
 
 # Hugo/blogdown generated output
-public/
+/public/
 resources/_gen/
 
 # R Markdown render artifacts in source tree
