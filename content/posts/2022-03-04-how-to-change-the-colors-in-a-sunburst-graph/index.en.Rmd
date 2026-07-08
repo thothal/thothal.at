@@ -53,13 +53,14 @@ already with a nice hierarchical structure.
 ```{r get_data, skimr_include_summary = FALSE, message = FALSE}
 library(dplyr)
 library(forcats)
+library(glue)
 titanic <- as_tibble(Titanic) %>% 
    mutate(across(where(is.character), fct_inorder))
 str(titanic)
 ```
 
 You can see that we have 
-`r glue("{nlevels(Class)} x {nlevels(Sex)} x {nlevels(Age)} x {nlevels(Survived)}", .envir = titanic)` rows corresponding to all possible combinations of 
+`r glue_data(titanic, "{nlevels(Class)} x {nlevels(Sex)} x {nlevels(Age)} x {nlevels(Survived)}")` rows corresponding to all possible combinations of 
 `r glue_collapse(head(names(titanic), -1L), ", ", last = " and ")`.
 
 The classical display (`?Titanic`) is the mosaic plot:
