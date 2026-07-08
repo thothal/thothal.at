@@ -16,8 +16,14 @@ options(
   # to disable knitting Rmd files on save, set this option to FALSE
   blogdown.knit.on_save = TRUE,
   # build .Rmd to .html (via Pandoc); to build to Markdown, set this option to 'markdown'
-  blogdown.method = 'html'
+  blogdown.method = "html"
 )
 
-# fix Hugo version
-options(blogdown.hugo.version = "0.79.0")
+# Make the installed Hugo binary discoverable in RStudio/blogdown sessions.
+hugo_dir <- file.path(Sys.getenv("APPDATA"), "Hugo", "0.163.3")
+if (dir.exists(hugo_dir)) {
+  Sys.setenv(PATH = paste(hugo_dir, Sys.getenv("PATH"), sep = .Platform$path.sep))
+}
+
+# Use the validated modern Hugo version for this project.
+options(blogdown.hugo.version = "0.163.3")

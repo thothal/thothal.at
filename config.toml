@@ -3,16 +3,23 @@ title = "thothal.com"
 
 theme = "hugo-coder"
 
-languageCode = "en"
 defaultContentLanguage = "en"
+locale = "en-US"
 
-paginate = 20
+[pagination]
+    pagerSize = 20
 
 pygmentsStyle = "b2"
 pygmentsCodeFences = true
 pygmentsCodeFencesGuessSyntax = true
 
-disqusShortname = "thothal"
+[services]
+    [services.disqus]
+        shortname = "thothal"
+
+[security]
+    allowContent = ['^text/html$', '^text/markdown$']
+
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "\\.knit\\.md$", "\\.utf8\\.md$"]
 [params]
     author = "Thorn V. Thaler"
@@ -87,27 +94,27 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "\\.knit\\.md$", "\\.utf8\
 
 [[params.social]]
     name = "Stackoverflow"
-    icon = "fa fa-stack-overflow"
+    icon = "fa-brands fa-stack-overflow"
     weight = 1
     url = "https://stackoverflow.com/users/4125751/thothal"
 [[params.social]]
     name = "Github"
-    icon = "fa fa-github"
+    icon = "fa-brands fa-github"
     weight = 1
     url = "https://github.com/thothal"
 [[params.social]]
     name = "Twitter"
-    icon = "fa fa-twitter"
+    icon = "fa-brands fa-twitter"
     weight = 3
     url = "https://twitter.com/thothal7"
 [[params.social]]
     name = "LinkedIn"
-    icon = "fa fa-linkedin"
+    icon = "fa-brands fa-linkedin"
     weight = 4
     url = "https://www.linkedin.com/in/thorn-thaler-197b5581/"
 # [[params.social]]
 #     name = "RSS"
-#     icon = "fa fa-rss"
+#     icon = "fa-solid fa-rss"
 #     weight = 6
 #     url = "https://myhugosite.com/index.xml"
 #     rel = "alternate"
@@ -116,7 +123,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "\\.knit\\.md$", "\\.utf8\
 
 [languages]
     [languages.en]
-        languageName = "English"
+        label = "English"
 
         [languages.en.menu]
 
