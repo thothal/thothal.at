@@ -184,7 +184,7 @@ upload_webpage <- function(service = .service_name, root = .public, username = N
 }
 
 
-build_website <- function(build_rmd = TRUE, quiet = FALSE) {
+build_webpage <- function(build_rmd = TRUE, quiet = FALSE) {
    cli_h2_q("Building Website")
    start <- Sys.time()
    if (quiet) {
@@ -216,7 +216,7 @@ main <- function() {
    opts <- parse_cli_args()
    if (opts$action %in% c("build", "all")) {
       .cli_quiet <<- opts$quiet
-      build_website(opts$build_rmd, opts$quiet)
+      build_webpage(opts$build_rmd, opts$quiet)
    }
    if (opts$action %in% c("upload", "all")) {
       .cli_quiet <<- opts$quiet
