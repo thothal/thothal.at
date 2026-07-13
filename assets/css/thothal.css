@@ -58,6 +58,20 @@
     text-align: center;
 }
 
+.list .post-year-label {
+    margin: 2.2rem 0 .4rem;
+    font-size: 2.1rem;
+    line-height: 1.25;
+}
+
+.list .post-year-label:first-of-type {
+    margin-top: 0;
+}
+
+.list .post-year-list {
+    margin-top: 0;
+}
+
 .cv-layout .cv-shell {
     display: grid;
     grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
