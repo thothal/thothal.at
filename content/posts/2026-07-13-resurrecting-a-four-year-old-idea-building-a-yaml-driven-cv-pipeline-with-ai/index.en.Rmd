@@ -1,0 +1,233 @@
+---
+title: 'Resurrecting a Four-Year-Old Idea: Building a YAML-Driven CV Pipeline with
+  AI'
+author: Thorn Thaler
+date: '2026-07-13'
+slug: resurrecting-a-four-year-old-idea-building-a-yaml-driven-cv-pipeline-with-ai
+categories:
+   - coding
+   - artificial-intelligence
+tags:
+  - GitHub Copilot
+  - YAML
+  - LaTeX
+  - Hugo
+  - blogdown
+  - Python
+  - automation
+---
+
+## The problem: two versions of the same CV
+
+Four years ago, when I created this blog, I already had a custom LaTeX CV class that I was 
+quite happy with. It allowed me to create a nicely formatted CV with all the typographic 
+control that LaTeX provides.
+
+At the same time, I wanted to show parts of my CV directly on this [blog](/cv/). The 
+obvious problem appeared immediately: I now had 
+**two representations of the same information**.
+
+On one side, there was my LaTeX CV:
+
+- education,
+- professional experience,
+- publications,
+- skills,
+- projects,
+- and all the other pieces that make up a résumé.
+
+On the other side, there was the CV section of this blog. The blog is basically a 
+[`blogdown`](https://pkgs.rstudio.com/blogdown/) project, which, under the hood, uses
+[hugo](https://gohugo.io/) as a static site generator. It was easy enough to set up
+a *static* CV site, which was basically a condensed copy and paste from my full LaTeX
+CV.
+
+Both contained essentially the same information, but were maintained independently. Every 
+change meant updating two places. The software engineer inside me knew this was wrong. The 
+information should exist only once. The presentation layer should be separate from the 
+data.
+
+## The missing piece: a data layer
+
+The architecture I wanted was clear:
+
+```
+              CV data
+                 |
+              YAML files
+             /          \
+            /            \
+        LaTeX CV       Hugo Blog
+```
+
+The YAML files should become the single source of truth. From them, I wanted to generate:
+
+1. my traditional PDF CV using LaTeX,
+2. the CV section of this blog using Hugo templates.
+
+The idea was simple. The implementation was not.
+
+At the time, I could not find a clean way to extract the data layer from my existing 
+LaTeX CV class. Thus, I gave up on the idea (and the blog itself eventually became a 
+dormant project).
+
+## Four years later: AI enters the game
+
+Fast forward four years. The technology landscape had changed significantly. AI-assisted 
+programming had become a reality.
+
+At some point, I needed to update my CV. It was simple enough to use my old LaTeX class
+(despite not having looked into it for quite some time). However, maintaining a German and 
+an English version was another nuisance. A distant memory brushed against my mind. If only
+I could find a way to separate data from representation. Then I could kill two birds with
+one stone:
+
+1. Have a simple enough data structure like YAML, where we keep the German and English data
+next to each other, making updates rather easy and turning them into a one-stop task.
+2. Once the data is separated from the representation, we can transform it into 
+virtually any format we like. That is, we can render my preferred LaTeX CV, as well as
+render the same information to a static site using Hugo.
+
+I started experimenting with GitHub Copilot, not expecting it to magically write the whole 
+system for me, but rather to help me explore and iterate faster. The interesting thing was 
+not that Copilot generated code. The interesting thing was that it helped me 
+**turn an idea that had been sitting in my backlog for years into a concrete implementation**.
+
+Through a series of prompts, design discussions, and refinements, I was able to define the 
+architecture of a small Python command-line tool.
+
+The goal:
+
+> Provide structured YAML files and generate my complete LaTeX CV.
+
+## Building the YAML-to-LaTeX generator
+
+The first milestone was a command-line application that could consume YAML files like:
+
+```yaml
+- period:
+  start: 2025-06
+  end: present
+
+  organization: Crif
+
+  title:
+    de: Head of Analytics
+    en: Head of Analytics
+
+  highlights:
+    de:
+      - Leitung standortübergreifender Analytics-Teams in Hamburg und Wien (7+2 Data 
+        Scientists unterschiedlicher Senioritätsstufen)
+      - Führung und Weiterentwicklung von Junior-, Associate- und Senior Data Scientists
+      - Vorantreiben der AI-Entwicklung durch den Einsatz von Copilot und agentenbasierten 
+        Workflows zur Steigerung der Produktivität und Effizienz im Arbeitsalltag
+      - Leitung wesentlicher technischer Transformationen einschließlich Einführung und
+        unternehmensweiter Etablierung der Databricks-Plattform
+    en:
+      - Lead cross-location analytics teams across Hamburg and Vienna (7+2 data scientists 
+        across different seniority levels)
+      - Manage and develop junior, associate, and senior data scientists
+      - Drive AI development leveraging Copilot and agent-based workflows to enhance 
+        productivity and daily operations
+      - Lead major technical transformation including introducing and driving adoption 
+        of the Databricks platform
+```
+
+and transform them into the LaTeX structures expected by my custom CV class.
+
+The result: The same CV I had manually maintained for years could now be generated 
+automatically. The LaTeX class remained responsible for **how the CV looks**. The YAML 
+files became responsible for **what the CV contains**.
+
+This was the separation I had originally wanted.
+
+Throughout the whole process, I did not write **a single line of code** myself, but rather 
+instructed GitHub Copilot to translate my ideas into code. In the beginning, I felt 
+uncomfortable about not writing any code myself anymore, but I was mesmerized by the rigor 
+and speed with which Copilot produced iteration after iteration while always testing and 
+documenting its progress. WOW! It definitely helped that I have some experience with coding 
+myself, so I could steer Copilot when it started to drift away from the original goal 
+(at least that was my impression).
+
+While letting Copilot handle much of the implementation work, I could concentrate on new
+features and new abstraction layers, which helped me create a 
+[final Python-based command-line tool](https://github.com/thothal/latexcv), which is quite 
+flexible regarding the content and also allows for a couple of personalization options.
+
+Eventually, I incorporated another YAML file (`layout.yaml`) which allows placing any 
+block of information at any position in the body or sidebar. The aim was not to reinvent
+another templating system, but to provide some flexibility within a given template.
+
+In this whole process, I learned about 
+[Jinja](https://jinja.palletsprojects.com/en/stable/), upon which the whole tool is built.
+Thus, I did not only get my desired output, I also learned another handy tool.
+
+## The second step: bringing the CV back into the blog
+
+Once the data layer existed, the next question was obvious: Why stop at LaTeX? The blog 
+already contained a CV section. It was just another presentation layer. The next step was 
+therefore to use the exact same YAML files and render them through Hugo templates.
+
+The architecture now looks like this:
+
+```
+                 YAML data
+                     |
+        +------------+------------+
+        |                         |
+        v                         v
+ LaTeX generator             Hugo templates
+        |                         |
+        v                         v
+     PDF CV                  Blog CV section
+```
+
+One dataset. Two outputs. No duplication.
+
+## What changed?
+
+The biggest change was not the amount of code written. It was changing the way I thought 
+about the problem. Four years ago, I tried to modify my LaTeX CV until it could somehow 
+serve as both a document and a data source. That turned out to be the wrong direction.
+
+The better approach was to extract the information into a neutral format and let different 
+systems consume it. The CV is no longer a document. It is a dataset that can produce 
+documents.
+
+## Lessons learned
+
+A few lessons from this little project:
+
+### 1. Separate content from presentation
+
+This is a principle we know from software engineering, databases, and web development. But 
+applying it to personal documents is surprisingly powerful.
+
+### 2. Old ideas sometimes only need new tools
+
+The concept was four years old. The missing ingredient was not the idea. It was the 
+ability to quickly prototype the solution.
+
+### 3. AI is most valuable as a thinking partner
+
+For this project, Copilot was not a replacement for engineering decisions. It helped with:
+
+- exploring implementation options,
+- creating boilerplate,
+- debugging,
+- documenting,
+- and iterating quickly.
+
+The architecture still had to come from me.
+
+## Conclusion
+
+What started as an annoying duplication problem became a small but elegant automation 
+project. My CV now has a proper data layer. The same YAML files generate both my LaTeX CV 
+and the CV section of this blog.
+
+And the most satisfying part:
+
+A problem I had abandoned four years ago was solved not because the problem changed, 
+but because the tools did.
