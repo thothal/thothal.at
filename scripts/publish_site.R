@@ -50,7 +50,7 @@ parse_bool <- function(value) {
 
 make_quiet_wrapper <- function(fun) {
    force(fun)
-   
+
    function(..., .envir = parent.frame()) {
       if (!.cli_quiet) {
          fun(..., .envir = .envir)
@@ -82,35 +82,35 @@ local({
 parse_cli_args <- function(args = commandArgs(trailingOnly = TRUE)) {
    option_list <- list(
       make_option(c("-a", "--action"),
-                  type = "character", default = "all",
-                  help = "Which task to run [build|upload|all] (default %default)."
+         type = "character", default = "all",
+         help = "Which task to run [build|upload|all] (default %default)."
       ),
       make_option(c("-s", "--service"),
-                  type = "character", default = .service_name,
-                  help = "FTP service/host (default %default)."
+         type = "character", default = .service_name,
+         help = "FTP service/host (default %default)."
       ),
       make_option(c("-r", "--root"),
-                  type = "character", default = .public,
-                  help = "Local public folder path (default %default)."
+         type = "character", default = .public,
+         help = "Local public folder path (default %default)."
       ),
       make_option(c("-u", "--username"),
-                  type = "character", default = NULL,
-                  help = "Override FTP username."
+         type = "character", default = NULL,
+         help = "Override FTP username."
       ),
       make_option(c("-p", "--password"),
-                  type = "character", default = NULL,
-                  help = "Override FTP password."
+         type = "character", default = NULL,
+         help = "Override FTP password."
       ),
       make_option(c("-q", "--quiet"),
-                  action = "store_true", default = FALSE,
-                  help = "Suppress CLI output."
+         action = "store_true", default = FALSE,
+         help = "Suppress CLI output."
       ),
       make_option(c("-b", "--build-rmd"),
-                  type = "character", default = "TRUE",
-                  help = "Rebuild site before upload (TRUE/FALSE, default %default)."
+         type = "character", default = "TRUE",
+         help = "Rebuild site before upload (TRUE/FALSE, default %default)."
       )
    )
-   
+
    parser <- OptionParser(
       option_list = option_list,
       description = "Build and/or upload the blog website."
@@ -135,7 +135,7 @@ upload_file <- function(file, credentials, root) {
    )
 }
 
-upload_webpage <- function(service = .service_name, root = .public, username = NULL, 
+upload_webpage <- function(service = .service_name, root = .public, username = NULL,
                            password = NULL) {
    cli_h2_q("Upload Website")
    files <- get_all_files(root)
@@ -184,7 +184,7 @@ upload_webpage <- function(service = .service_name, root = .public, username = N
 }
 
 
-build_webpage <- function(build_rmd = TRUE, quiet = FALSE) {
+build_webpage <- function(build_rmd = "newfile", quiet = FALSE) {
    cli_h2_q("Building Website")
    start <- Sys.time()
    if (quiet) {
@@ -192,11 +192,14 @@ build_webpage <- function(build_rmd = TRUE, quiet = FALSE) {
          nf <- file(nullfile(), "wt", blocking = FALSE)
          sink(nf, type = "output")
          sink(nf, type = "message")
-         on.exit({
-            sink(type = "output")
-            sink(type = "message")
-            close(nf)
-         }, add = TRUE)
+         on.exit(
+            {
+               sink(type = "output")
+               sink(type = "message")
+               close(nf)
+            },
+            add = TRUE
+         )
          build_site(build_rmd = build_rmd, args = c("--quiet"))
       })
    } else {
@@ -234,7 +237,7 @@ if (!interactive()) {
 }
 
 # Interactive usage from RStudio:
-# source('scripts/upload_public_to_ftp.R')
+# source('scripts/publish_site.R')
 # build_website()
 # upload_webpage()
 # upload_webpage(service = 'example.com', username = 'user', password = 'secret')

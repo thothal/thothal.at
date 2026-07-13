@@ -17,43 +17,46 @@
 {{- $websiteLabel := "" -}}
 
 {{- with $contact -}}
-  {{- range .items -}}
-    {{- $type := lower (printf "%v" .type) -}}
-    {{- if and (eq $type "email") .value -}}
-      {{- $email = printf "%v" .value -}}
-    {{- end -}}
-    {{- if eq $type "website" -}}
-      {{- with .url -}}{{- $websiteURL = printf "%v" . -}}{{- end -}}
-      {{- with .label -}}{{- $websiteLabel = printf "%v" . -}}{{- end -}}
-    {{- end -}}
-  {{- end -}}
+{{- range .items -}}
+{{- $type := lower (printf "%v" .type) -}}
+{{- if and (eq $type "email") .value -}}
+{{- $email = printf "%v" .value -}}
+{{- end -}}
+{{- if eq $type "website" -}}
+{{- with .url -}}{{- $websiteURL = printf "%v" . -}}{{- end -}}
+{{- with .label -}}{{- $websiteLabel = printf "%v" . -}}{{- end -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 
 <div id="contact" class="section level2">
-  <h2>{{ if eq $lang "de" }}Kontakt{{ else }}Contact{{ end }}</h2>
+   <h2>{{ if eq $lang "de" }}Kontakt{{ else }}Contact{{ end }}</h2>
 
-  <p class="about-contact-address">
-    {{ $fullName }}<br />
-    {{ with $address.street }}{{ . }}<br />{{ end }}
-    {{ with $address.postal_code }}{{ . }}{{ end }} {{ with $address.city }}{{ . }}{{ end }}<br />
-    {{ with $address.country }}
+   <p class="about-contact-address">
+      {{ $fullName }}<br />
+      {{ with $address.street }}{{ . }}<br />{{ end }}
+      {{ with $address.postal_code }}{{ . }}{{ end }} {{ with $address.city }}{{ . }}{{ end }}<br />
+      {{ with $address.country }}
       {{ if reflect.IsMap . }}
-        {{ with (index . $lang) }}{{ . }}{{ else }}{{ with (index . "en") }}{{ . }}{{ end }}{{ end }}
+      {{ with (index . $lang) }}{{ . }}{{ else }}{{ with (index . "en") }}{{ . }}{{ end }}{{ end }}
       {{ else }}
-        {{ . }}
+      {{ . }}
       {{ end }}
-    {{ end }}
-  </p>
+      {{ end }}
+   </p>
 
-  {{ if or $email $websiteURL }}
-  <p>
-    {{ if $email }}{{ if eq $lang "de" }}E-Mail{{ else }}Email{{ end }}: <a href="mailto:{{ $email }}">{{ $email }}</a><br />{{ end }}
-    {{ if $websiteURL }}{{ if eq $lang "de" }}Webseite{{ else }}Website{{ end }}: <a href="{{ $websiteURL }}">{{ if $websiteLabel }}{{ $websiteLabel }}{{ else }}{{ $websiteURL }}{{ end }}</a>{{ end }}
-  </p>
-  {{ end }}
+   {{ if or $email $websiteURL }}
+   <p>
+      {{ if $email }}{{ if eq $lang "de" }}E-Mail{{ else }}Email{{ end }}: <a href="mailto:{{ $email }}">{{ $email
+         }}</a><br />{{ end }}
+      {{ if $websiteURL }}{{ if eq $lang "de" }}Webseite{{ else }}Website{{ end }}: <a href="{{ $websiteURL }}">{{ if
+         $websiteLabel }}{{ $websiteLabel }}{{ else }}{{ $websiteURL }}{{ end }}</a>{{ end }}
+   </p>
+   {{ end }}
 
-  <p class="about-contact-responsible">
-    {{ if eq $lang "de" }}Verantwortlich fuer den Inhalt:{{ else }}Responsible for content:{{ end }}<br />
-    {{ $fullName }}{{ with $address.street }} · {{ . }}{{ end }}{{ with $address.postal_code }} · {{ . }}{{ end }}{{ with $address.city }} {{ . }}{{ end }}
-  </p>
+   <p class="about-contact-responsible">
+      {{ if eq $lang "de" }}Verantwortlich fuer den Inhalt:{{ else }}Responsible for content:{{ end }}<br />
+      {{ $fullName }}{{ with $address.street }} · {{ . }}{{ end }}{{ with $address.postal_code }} · {{ . }}{{ end }}{{
+      with $address.city }} {{ . }}{{ end }}
+   </p>
 </div>

@@ -189,11 +189,14 @@ sync_cv_data <- function(repo = .default_repo,
    }
    dir.create(temp_root, recursive = TRUE, showWarnings = FALSE)
 
-   on.exit({
-      if (dir.exists(temp_root)) {
-         unlink(temp_root, recursive = TRUE, force = TRUE)
-      }
-   }, add = TRUE)
+   on.exit(
+      {
+         if (dir.exists(temp_root)) {
+            unlink(temp_root, recursive = TRUE, force = TRUE)
+         }
+      },
+      add = TRUE
+   )
 
    if (!is.null(local_data_path) && nzchar(trimws(local_data_path))) {
       resolved_local <- normalizePath(local_data_path, winslash = "/", mustWork = TRUE)
@@ -237,20 +240,34 @@ sync_cv_data <- function(repo = .default_repo,
 
 parse_cli_args <- function(args = commandArgs(trailingOnly = TRUE)) {
    option_list <- list(
-      make_option(c("-r", "--repo"), type = "character", default = .default_repo,
-                  help = "GitHub repo in owner/name format [default %default]"),
-      make_option(c("-f", "--ref"), type = "character", default = .default_ref,
-                  help = "Git ref/branch/tag [default %default]"),
-      make_option(c("-s", "--source-subpath"), type = "character", default = .default_source_subpath,
-                  help = "Path to data directory inside the repo/archive [default %default]"),
-      make_option(c("-t", "--target-dir"), type = "character", default = .default_target_dir,
-                  help = "Local target directory under the workspace root [default %default]"),
-      make_option(c("-l", "--local-data-path"), type = "character", default = NULL,
-                  help = "Use a local data path instead of downloading from GitHub"),
-      make_option(c("-F", "--files"), type = "character", default = paste(.default_files, collapse = ","),
-                  help = "Comma-separated list of required files [default %default]"),
-      make_option(c("-q", "--quiet"), action = "store_true", default = FALSE,
-                  help = "Suppress informational output")
+      make_option(c("-r", "--repo"),
+         type = "character", default = .default_repo,
+         help = "GitHub repo in owner/name format [default %default]"
+      ),
+      make_option(c("-f", "--ref"),
+         type = "character", default = .default_ref,
+         help = "Git ref/branch/tag [default %default]"
+      ),
+      make_option(c("-s", "--source-subpath"),
+         type = "character", default = .default_source_subpath,
+         help = "Path to data directory inside the repo/archive [default %default]"
+      ),
+      make_option(c("-t", "--target-dir"),
+         type = "character", default = .default_target_dir,
+         help = "Local target directory under the workspace root [default %default]"
+      ),
+      make_option(c("-l", "--local-data-path"),
+         type = "character", default = NULL,
+         help = "Use a local data path instead of downloading from GitHub"
+      ),
+      make_option(c("-F", "--files"),
+         type = "character", default = paste(.default_files, collapse = ","),
+         help = "Comma-separated list of required files [default %default]"
+      ),
+      make_option(c("-q", "--quiet"),
+         action = "store_true", default = FALSE,
+         help = "Suppress informational output"
+      )
    )
 
    parser <- OptionParser(
