@@ -117,11 +117,13 @@ expand_github_archive <- function(repo_name, repo_ref, destination_dir) {
    headers <- c(
       Authorization = sprintf("Bearer %s", token),
       Accept = "application/vnd.github+json",
-      `User-Agent` = "cv-sync-script"
+      `User-Agent` = "cv-sync-script",
+      `X-GitHub-Api-Version` = "2026-03-10"
    )
 
    write_info(sprintf("Downloading %s@%s", repo_name, repo_ref))
-   handle <- curl::new_handle(httpheader = headers)
+   handle <- curl::new_handle(followlocation = TRUE)
+   handle <- curl::handle_setheaders(handle, .list = headers)
    curl::curl_download(url, destfile = archive_path, handle = handle, quiet = TRUE)
 
    write_info("Extracting archive")
