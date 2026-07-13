@@ -3,8 +3,6 @@ slug: about
 title: About
 ---
 
-## Contact
-
-> Thorn Thaler  
-Staudingerstraße 38  
-22607 Hamburg 
+```{r cv-impressum, echo=FALSE, results='asis'}
+cat(blogdown::shortcode("cv-impressum"))
+```

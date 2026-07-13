@@ -195,8 +195,8 @@ Render-time source in this repo:
 
 Run from the project root:
 
-```powershell
-.\scripts\sync-cv-data.ps1 -Repo "thothal/personal-cv-data" -Ref "main"
+```text
+Rscript .\scripts\sync-cv-data.R -r "thothal/personal-cv-data" -f "main"
 ```
 
 For private GitHub access, set one of these environment variables first:
@@ -206,8 +206,8 @@ For private GitHub access, set one of these environment variables first:
 
 Local override mode (useful for testing without GitHub auth):
 
-```powershell
-.\scripts\sync-cv-data.ps1 -LocalDataPath "C:\path\to\personal-cv-data\data"
+```text
+Rscript .\scripts\sync-cv-data.R -l "C:\path\to\personal-cv-data\data"
 ```
 
 ### CV Page Source And Rendering

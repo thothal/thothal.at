@@ -58,6 +58,29 @@
     text-align: center;
 }
 
+.list .post-year-label {
+    margin: 2.2rem 0 .4rem;
+    font-size: 2.1rem;
+    line-height: 1.25;
+}
+
+.list .post-year-label:first-of-type {
+    margin-top: 0;
+}
+
+.list .post-year-list {
+    margin-top: 0;
+}
+
+.about-contact-address {
+    margin-top: 0;
+    margin-bottom: .55rem;
+}
+
+.about-contact-responsible {
+    margin-top: .55rem;
+}
+
 .cv-layout .cv-shell {
     display: grid;
     grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
@@ -315,6 +338,10 @@
     align-items: start;
 }
 
+.cv-layout.CV .cv-timeline-block .cv-dl {
+    grid-template-columns: minmax(13rem, 22%) 1fr;
+}
+
 .cv-layout.CV .cv-dl dt {
     float: none;
     clear: none;
@@ -357,6 +384,10 @@
     margin: 0;
     font-weight: inherit;
     line-height: inherit;
+}
+
+.cv-layout.CV .cv-timeline-block .cv-term-heading {
+    white-space: nowrap;
 }
 
 .cv-layout.CV .cv-merged-block .cv-dl {

@@ -60,13 +60,13 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "\\.knit\\.md$", "\\.utf8\
     enableTwemoji = false
 
     # Custom CSS
-    customCSS = ["css/thothal.css"]
+    customCSS = ["css/thothal.css", "css/an-old-hope.css"]
 
     # Custom SCSS
     customSCSS = []
 
     # Custom JS
-    customJS = []
+    customJS = ["js/highlight.pack.js", "js/highlight-init.js"]
 
 # If you want to use fathom(https://usefathom.com) for analytics, add this section
 # [params.fathomAnalytics]
