@@ -9,9 +9,8 @@ locale = "en-US"
 [pagination]
     pagerSize = 20
 
-pygmentsStyle = "b2"
-pygmentsCodeFences = true
-pygmentsCodeFencesGuessSyntax = true
+[markup.highlight]
+    style = "github"
 
 [services]
     [services.disqus]
