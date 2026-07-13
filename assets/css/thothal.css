@@ -72,6 +72,15 @@
     margin-top: 0;
 }
 
+.about-contact-address {
+    margin-top: 0;
+    margin-bottom: .55rem;
+}
+
+.about-contact-responsible {
+    margin-top: .55rem;
+}
+
 .cv-layout .cv-shell {
     display: grid;
     grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr);
