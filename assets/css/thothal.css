@@ -315,6 +315,10 @@
     align-items: start;
 }
 
+.cv-layout.CV .cv-timeline-block .cv-dl {
+    grid-template-columns: minmax(13rem, 22%) 1fr;
+}
+
 .cv-layout.CV .cv-dl dt {
     float: none;
     clear: none;
@@ -357,6 +361,10 @@
     margin: 0;
     font-weight: inherit;
     line-height: inherit;
+}
+
+.cv-layout.CV .cv-timeline-block .cv-term-heading {
+    white-space: nowrap;
 }
 
 .cv-layout.CV .cv-merged-block .cv-dl {
